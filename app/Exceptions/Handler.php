@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Services\AuthService;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +48,27 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        if (! $request->expectsJson()) {
+            return parent::render($request, $exception);
+        }
+
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json([
+                'data' => [
+                    'message' => 'Resource not found',
+                    'status_code' => Response::HTTP_NOT_FOUND
+                ]
+            ], Response::HTTP_NOT_FOUND);
+        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            if ($request->url() == route('api.auth.logout')) {
+                $apiAuthService = new AuthService();
+                $unauthorizedResponseData = $apiAuthService->getUnauthorizedLogoutReponseData();
+                return response()->json($unauthorizedResponseData, Response::HTTP_UNAUTHORIZED);
+            } else {
+                $apiAuthService = new AuthService();
+                $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
+                return response()->json($accessDeniedResponseData, Response::HTTP_FORBIDDEN);
+            }
+        }
     }
 }
