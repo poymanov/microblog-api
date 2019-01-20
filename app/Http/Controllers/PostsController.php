@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 use App\Services\PostsService;
 use Illuminate\Http\Response;
@@ -11,10 +13,24 @@ class PostsController extends Controller
 {
     private $service;
 
+    /**
+     * PostsController constructor.
+     */
     public function __construct()
     {
         $this->service = new PostsService();
         $this->middleware('auth:api')->only(['store', 'destroy']);
+    }
+
+    /**
+     * Список публикаций пользователя
+     *
+     * @param User $user
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(User $user)
+    {
+        return PostResource::collection(Post::where(['user_id' => $user->id])->paginate(10));
     }
 
     /**

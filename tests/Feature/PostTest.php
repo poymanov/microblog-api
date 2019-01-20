@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Post;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -130,5 +131,81 @@ class PostTest extends TestCase
                 'message' => 'Successfully deleted',
             ]
         ]);
+    }
+
+    /**
+     * Список публикаций пользователя
+     *
+     * @test
+     */
+    public function get_user_posts()
+    {
+        $user = factory(User::class)->create();
+        $posts = factory(Post::class, 5)->create(['user_id' => $user->id]);
+        $postsArray = $this->postsToArray($posts);
+
+        $url = route('api.posts.user', $user);
+
+        $response = $this->json('get', $url);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertExactJson([
+            'data' => $postsArray,
+            'links' => [
+                'first' => $url.'?page=1',
+                'last' => $url.'?page=1',
+                'prev' => null,
+                'next' => null,
+            ],
+            'meta' => [
+                'current_page' => 1,
+                'from' => 1,
+                'last_page' => 1,
+                'path' => $url,
+                'per_page' => 10,
+                'to' => 5,
+                'total' => 5
+            ]
+        ]);
+    }
+
+    /**
+     * Список публикаций пользователя с пагинацией
+     *
+     * @test
+     */
+    public function get_user_posts_with_pagination()
+    {
+        $user = factory(User::class)->create();
+        factory(Post::class, 20)->create(['user_id' => $user->id]);
+
+        $url = route('api.posts.user', $user);
+
+        $response = $this->json('get', $url);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['links' => [
+            'first' => $url.'?page=1',
+            'last' => $url.'?page=2',
+            'next' => $url.'?page=2',
+            'prev' => null,
+        ]]);
+    }
+
+    /**
+     * Список публикация в виде массива
+     * @param $posts
+     * @return array|mixed
+     */
+    protected function postsToArray($posts)
+    {
+        $postsArray = [];
+
+        foreach ($posts as $post) {
+            $postsArray[] = [
+                'id' => $post->id,
+                'text' => $post->text,
+            ];
+        }
+        return count($postsArray) == 1 ? $postsArray[0] : $postsArray;
     }
 }

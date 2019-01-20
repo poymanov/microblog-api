@@ -20,6 +20,7 @@ Route::group(['prefix' => 'auth', 'as' => 'api.auth.'], function () {
 });
 
 Route::group(['prefix' => 'posts', 'as' => 'api.posts.'], function () {
+    Route::get('{user}', 'PostsController@index')->name('user');
     Route::post('', 'PostsController@store')->name('store');
     Route::delete('{post}', 'PostsController@destroy')->name('destroy');
 });
