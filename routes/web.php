@@ -12,5 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
+
+Route::get('/docs', function () {
+    $path = app_path() . '/Http/Controllers';
+    $openapi = \OpenApi\scan($path);
+
+    return $openapi->toYaml();
+});
+
