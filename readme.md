@@ -49,6 +49,11 @@ php artisan key:generate
 ```
 php artisan migrate
 ```
+Установить ключи для авторизации через API:
+```
+php artisan passport:install
+```
+
 
 ## Тестирование
 
