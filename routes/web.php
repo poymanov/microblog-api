@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/docs', function () {
-    $path = app_path() . '/Http/Controllers';
+    $path = app_path();
     $openapi = \OpenApi\scan($path);
 
     return $openapi->toYaml();

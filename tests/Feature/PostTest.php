@@ -113,7 +113,7 @@ class PostTest extends TestCase
      *
      * @test
      */
-    public function delete_book()
+    public function delete_post()
     {
         $user = $this->authApi();
 

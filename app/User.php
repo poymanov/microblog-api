@@ -7,6 +7,18 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
+/**
+ * @OA\Schema(
+ *     description="Пользователь",
+ *     title="User",
+ *     required={"id", "name", "email", "password"},
+ *     @OA\Property(property="id", type="int"),
+ *     @OA\Property(property="name", type="string", maxLength=255),
+ *     @OA\Property(property="email", type="string", maxLength=255),
+ *     @OA\Property(property="password", type="string", maxLength=255),
+ *     @OA\Property(property="remember_token", type="string", maxLength=100)
+ * )
+ */
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens;

@@ -13,6 +13,17 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property User $user
  */
+
+/**
+ * @OA\Schema(
+ *     description="Публикация",
+ *     title="Post",
+ *     required={"id", "text", "user_id"},
+ *     @OA\Property(property="id", type="int"),
+ *     @OA\Property(property="text", type="string", maxLength=300),
+ *     @OA\Property(property="user_id", type="int")
+ * )
+ */
 class Post extends Model
 {
     /**

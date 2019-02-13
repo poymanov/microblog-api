@@ -48,15 +48,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if (! $request->expectsJson()) {
-            return parent::render($request, $exception);
-        }
-
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
             return response()->json([
                 'data' => [
                     'message' => 'Resource not found',
-                    'status_code' => Response::HTTP_NOT_FOUND
                 ]
             ], Response::HTTP_NOT_FOUND);
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
@@ -69,6 +64,17 @@ class Handler extends ExceptionHandler
                 $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
                 return response()->json($accessDeniedResponseData, Response::HTTP_FORBIDDEN);
             }
+        } else if ($exception instanceof \InvalidArgumentException) {
+            $apiAuthService = new AuthService();
+            $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
+            return response()->json($accessDeniedResponseData, Response::HTTP_FORBIDDEN);
+        } else {
+            return response()->json([
+                'data' => [
+                    'message' => 'Something went wrong',
+                    'errors' => $exception->getMessage()
+                ]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

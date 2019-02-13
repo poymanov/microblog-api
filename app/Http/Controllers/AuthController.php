@@ -207,7 +207,6 @@ class AuthController extends Controller
      *              ),
      *          ),
      *     ),
-     *     @OA\Parameter(name="Accept", in="header", required=true, description="Тип ответа", @OA\Schema(type="string", default="application/json"))
      * ),
      */
     public function logout()
