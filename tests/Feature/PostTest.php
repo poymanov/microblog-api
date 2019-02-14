@@ -204,6 +204,7 @@ class PostTest extends TestCase
             $postsArray[] = [
                 'id' => $post->id,
                 'text' => $post->text,
+                'created_at' => $post->created_at->timestamp,
             ];
         }
         return count($postsArray) == 1 ? $postsArray[0] : $postsArray;

@@ -30,11 +30,15 @@ class PostsController extends Controller
      *              type="integer",
      *              example=1,
      *          ),
-     *
      *         @OA\Property(
      *              property="text",
      *              type="string",
      *              example="text text text",
+     *         ),
+     *         @OA\Property(
+     *              property="created_at",
+     *              type="integer",
+     *              example=1550087394,
      *         ),
      * )
      */
@@ -103,7 +107,7 @@ class PostsController extends Controller
      */
     public function index(User $user)
     {
-        return PostResource::collection(Post::where(['user_id' => $user->id])->paginate(10));
+        return PostResource::collection(Post::where(['user_id' => $user->id])->orderBy('created_at', 'desc')->paginate(10));
     }
 
     /**

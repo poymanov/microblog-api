@@ -17,6 +17,7 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'text' => $this->text,
+            'created_at' => $this->created_at->timestamp,
         ];
     }
 }
