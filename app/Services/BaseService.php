@@ -2,14 +2,25 @@
 
 namespace App\Services;
 
-use Validator;
 use Illuminate\Http\Request;
+use Validator;
 
-class BaseService
+/**
+ * Class BaseService
+ * @package App\Services
+ *
+ * Базовый сервис с основными вариантами ответов
+ */
+abstract class BaseService
 {
+    /**
+     * Набор правил валидаций
+     */
     const VALIDATION_RULES = [];
 
     /**
+     * Валидация запроса и возврат ответа в json
+     *
      * @param Request $request
      * @return array
      */
@@ -21,8 +32,7 @@ class BaseService
         $validator = Validator::make($validationData, static::VALIDATION_RULES);
 
         if ($validator->fails()) {
-            $message = 'Validation failed';
-            $errorData = $this->getFailedValidationData($message, $validator->errors());
+            $errorData = $this->getFailedValidationData(trans('responses.validation_failed'), $validator->errors());
 
             return [false, $errorData];
         }
@@ -31,30 +41,29 @@ class BaseService
     }
 
     /**
+     * Ответ "Успешное удаление"
+     *
      * @return array
      */
     public function deletedResponseData()
     {
-        $message = 'Successfully deleted';
-
-        return $this->createJsonResponseData($message);
+        return $this->createJsonResponseData(trans('responses.successfully_deleted'));
     }
 
     /**
-     * @param $instance
-     * @param $routeName
+     * Ответ "Успешное создание"
+     *
      * @return array
      */
     public function createdResponseDataBase()
     {
-        $message = 'Successfully created';
-
-        $data = $this->createJsonResponseData($message);
-
-        return $data;
+        return $this->createJsonResponseData(trans('responses.successfully_created'));
     }
 
     /**
+     * Ответ с ошибками валидации
+     *
+     * @param $message
      * @param $errors
      * @return array
      */
@@ -67,6 +76,21 @@ class BaseService
     }
 
     /**
+     * Данные для ответа в json: пользователю запрещен доступ к API
+     *
+     * @return array
+     */
+    public function getAccessDeniedResponseData()
+    {
+        return $this->getErrorResponseScheme(
+            trans('responses.access_denied.message'),
+            trans('responses.access_denied.errors')
+        );
+    }
+
+    /**
+     * Заготовка для ответа
+     *
      * @param $message
      * @return array
      */
@@ -79,9 +103,21 @@ class BaseService
         ];
     }
 
-    public function getAccessDeniedResponseData()
+
+    /**
+     * Базовая структура данных ответа для json
+     *
+     * @param $message
+     * @param $errors
+     * @return array
+     */
+    protected function getErrorResponseScheme($message, $errors)
     {
-        $authService = new AuthService();
-        return $authService->getAccessDeniedResponseData();
+        return [
+            'data' => [
+                'message' => $message,
+                'errors' => $errors,
+            ],
+        ];
     }
 }

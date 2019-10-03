@@ -5,35 +5,14 @@ namespace App\Services;
 use App\User;
 use Carbon\Carbon;
 
-class AuthService
+/**
+ * Class AuthService
+ * @package App\Services
+ *
+ * Сервис для управления авторизацией пользователей
+ */
+class AuthService extends BaseService
 {
-    /**
-     * Описание сообщений для формирования ответов
-     */
-    const RESPONSE_DATA = [
-        'VALIDATION_FAILED' => [
-            'MESSAGE' => 'Validation failed',
-        ],
-        'UNAUTHORIZED' => [
-            'MESSAGE' => 'Unauthorized',
-            'ERRORS' => 'Failed to authorize user (unknown user or invalid email/password)'
-        ],
-        'ACCESS_DENIED' => [
-            'MESSAGE' => 'Access denied',
-            'ERRORS' => 'You have not access permission to API',
-        ],
-        'UNAUTHORIZED_LOGOUT' => [
-            'MESSAGE' => 'Unauthorized',
-            'ERRORS' => 'Failed to logout',
-        ],
-        'SUCCESSFULLY_LOGOUT' => [
-            'MESSAGE' => 'Successfully logged out',
-        ],
-        'SUCCESSFULLY_SIGNUP' => [
-            'MESSAGE' => 'User created'
-        ]
-    ];
-
     /**
      * Создание токена доступа для пользователя
      *
@@ -79,7 +58,7 @@ class AuthService
     {
         return [
             'data' => [
-                'message' => self::RESPONSE_DATA['SUCCESSFULLY_LOGOUT']['MESSAGE'],
+                'message' => trans('responses.successfully_logout.message'),
             ]
         ];
     }
@@ -93,22 +72,9 @@ class AuthService
     {
         return [
             'data' => [
-                'message' => self::RESPONSE_DATA['SUCCESSFULLY_SIGNUP']['MESSAGE'],
+                'message' => trans('responses.successfully_signup.message'),
             ]
         ];
-    }
-
-    /**
-     * Данные для ответа в json: пользователю запрещен доступ к API
-     *
-     * @return array
-     */
-    public function getAccessDeniedResponseData()
-    {
-        return $this->getErrorResponseScheme(
-            self::RESPONSE_DATA['ACCESS_DENIED']['MESSAGE'],
-            self::RESPONSE_DATA['ACCESS_DENIED']['ERRORS']
-        );
     }
 
     /**
@@ -119,7 +85,7 @@ class AuthService
      */
     public function getFailedValidationResponseData($errors)
     {
-        return $this->getErrorResponseScheme(self::RESPONSE_DATA['VALIDATION_FAILED']['MESSAGE'], $errors);
+        return $this->getErrorResponseScheme(trans('responses.validation_failed'), $errors);
     }
 
     /**
@@ -130,37 +96,21 @@ class AuthService
     public function getUnauthorizedResponseData()
     {
         return $this->getErrorResponseScheme(
-            self::RESPONSE_DATA['UNAUTHORIZED']['MESSAGE'],
-            self::RESPONSE_DATA['UNAUTHORIZED']['ERRORS']
+            trans('responses.unauthorized.message'),
+            trans('responses.unauthorized.errors')
         );
     }
 
     /**
      * Данные для ответа в json: попытка прекратить пользовательский сеанс неавторизованным пользователем
+     *
      * @return array
      */
-    public function getUnauthorizedLogoutReponseData()
+    public function getUnauthorizedLogoutResponseData()
     {
         return $this->getErrorResponseScheme(
-            self::RESPONSE_DATA['UNAUTHORIZED_LOGOUT']['MESSAGE'],
-            self::RESPONSE_DATA['UNAUTHORIZED_LOGOUT']['ERRORS']
+            trans('responses.unauthorized_logout.message'),
+            trans('responses.unauthorized_logout.errors')
         );
-    }
-
-    /**
-     * Базовая структура данных ответа для json
-     *
-     * @param $message
-     * @param $errors
-     * @return array
-     */
-    private function getErrorResponseScheme($message, $errors)
-    {
-        return [
-            'data' => [
-                'message' => $message,
-                'errors' => $errors,
-            ],
-        ];
     }
 }

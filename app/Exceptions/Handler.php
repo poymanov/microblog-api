@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
             if ($request->url() == route('api.auth.logout')) {
                 $apiAuthService = new AuthService();
-                $unauthorizedResponseData = $apiAuthService->getUnauthorizedLogoutReponseData();
+                $unauthorizedResponseData = $apiAuthService->getUnauthorizedLogoutResponseData();
                 return response()->json($unauthorizedResponseData, Response::HTTP_UNAUTHORIZED);
             } else {
                 $apiAuthService = new AuthService();

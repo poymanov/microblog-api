@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
 use App\Post;
-use App\User;
-use Illuminate\Http\Request;
 use App\Services\PostsService;
+use App\User;
 use Illuminate\Http\Response;
 
 class PostsController extends Controller

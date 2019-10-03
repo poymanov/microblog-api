@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Services\AuthService;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -24,7 +23,7 @@ class AuthTest extends TestCase
 
         $response->assertExactJson([
             'data' => [
-                'message' => AuthService::RESPONSE_DATA['VALIDATION_FAILED']['MESSAGE'],
+                'message' => trans('responses.validation_failed'),
                 'errors' => [
                     'name' => ['The name field is required.'],
                     'email' => ['The email field is required.'],
@@ -50,7 +49,7 @@ class AuthTest extends TestCase
 
         $response->assertExactJson([
             'data' => [
-                'message' => AuthService::RESPONSE_DATA['SUCCESSFULLY_SIGNUP']['MESSAGE'],
+                'message' => trans('responses.successfully_signup.message'),
             ]
         ]);
 
@@ -68,7 +67,7 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertExactJson([
             'data' => [
-                'message' => AuthService::RESPONSE_DATA['VALIDATION_FAILED']['MESSAGE'],
+                'message' => trans('responses.validation_failed'),
                 'errors' => [
                     'email' => ['The email field is required.'],
                     'password' => ['The password field is required.'],
@@ -88,8 +87,8 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertExactJson([
             'data' => [
-                'message' => AuthService::RESPONSE_DATA['UNAUTHORIZED']['MESSAGE'],
-                'errors' => AuthService::RESPONSE_DATA['UNAUTHORIZED']['ERRORS'],
+                'message' => trans('responses.unauthorized.message'),
+                'errors' => trans('responses.unauthorized.errors'),
             ]
         ]);
     }
@@ -105,8 +104,8 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertExactJson([
             'data' => [
-                'message' => AuthService::RESPONSE_DATA['UNAUTHORIZED_LOGOUT']['MESSAGE'],
-                'errors' => AuthService::RESPONSE_DATA['UNAUTHORIZED_LOGOUT']['ERRORS'],
+                'message' => trans('responses.unauthorized_logout.message'),
+                'errors' => trans('responses.unauthorized_logout.errors'),
             ]
         ]);
     }
@@ -140,7 +139,7 @@ class AuthTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertExactJson([
             'data' => [
-                'message' => AuthService::RESPONSE_DATA['SUCCESSFULLY_LOGOUT']['MESSAGE'],
+                'message' => trans('responses.successfully_logout.message'),
             ]
         ]);
     }

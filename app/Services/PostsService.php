@@ -2,6 +2,12 @@
 
 namespace App\Services;
 
+/**
+ * Class PostsService
+ * @package App\Services
+ *
+ * Сервис управления публикациями
+ */
 class PostsService extends BaseService
 {
     const VALIDATION_RULES = [
@@ -10,6 +16,8 @@ class PostsService extends BaseService
     ];
 
     /**
+     * Ответ "Успешное создание"
+     *
      * @return array
      */
     public function createdResponseData()
