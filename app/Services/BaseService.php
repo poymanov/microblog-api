@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Dto\ErrorResponseDto;
+use App\Dto\factories\ErrorResponseDtoFactory;
 use App\Dto\factories\ValidationDtoFactory;
 use App\Dto\ValidationDto;
 use Illuminate\Http\Request;
@@ -22,9 +24,9 @@ abstract class BaseService
 
     /**
      * Валидация запроса и возврат ответа в json
-     *
+     * 
      * @param Request $request
-     * @return array
+     * @return ValidationDto
      */
     public function validateJsonRequest(Request $request): ValidationDto
     {
@@ -61,31 +63,13 @@ abstract class BaseService
     }
 
     /**
-     * Ответ с ошибками валидации
-     *
-     * @param $message
-     * @param $errors
-     * @return array
-     */
-    protected function getFailedValidationData($message, $errors)
-    {
-        $data = $this->createJsonResponseData($message);
-        $data['data']['errors'] = $errors;
-
-        return $data;
-    }
-
-    /**
      * Данные для ответа в json: пользователю запрещен доступ к API
      *
-     * @return array
+     * @return ErrorResponseDto
      */
-    public function getAccessDeniedResponseData()
+    public function getAccessDeniedResponseData(): ErrorResponseDto
     {
-        return $this->getErrorResponseScheme(
-            trans('responses.access_denied.message'),
-            trans('responses.access_denied.errors')
-        );
+        return ErrorResponseDtoFactory::buildAccessDenied();
     }
 
     /**

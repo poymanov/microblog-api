@@ -8,13 +8,16 @@ namespace App\Dto;
  *
  * Объект для передачи статуса валидации
  */
-class ValidationDto extends ErrorResponseDto
+class ValidationDto extends ResponseDto
 {
     /** Состояние валидации - успешное */
     private const STATUS_OK = 1;
 
     /** Состояние валидации - были ошибки */
     private const STATUS_FAILED = 2;
+
+    /** @var array Список ошибок */
+    public $errors = [];
 
     /** @var array Успешно провалидированные данные */
     protected $data = [];
@@ -72,5 +75,34 @@ class ValidationDto extends ErrorResponseDto
     public function setFailed(): void
     {
         $this->status = self::STATUS_FAILED;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param array $errors
+     */
+    public function setErrors(array $errors): void
+    {
+        $this->errors = $errors;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $data = parent::toArray();
+        $data['data']['errors'] = $this->errors;
+
+        return $data;
     }
 }

@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Services\AuthService;
 use App\User;
+use Auth;
 use Hash;
 use Illuminate\Http\Response;
 use Validator;
-use Auth;
 
 class AuthController extends Controller
 {
@@ -86,8 +86,8 @@ class AuthController extends Controller
 
         // Проверка правильности полученных данных
         if ($validator->fails()) {
-            $responseData = $this->service->getFailedValidationResponseData($validator->errors());
-            return response()->json($responseData, Response::HTTP_UNPROCESSABLE_ENTITY);
+            $failedValidation = $this->service->getFailedValidationResponseData($validator->errors()->toArray());
+            return response()->json($failedValidation, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::create([
@@ -157,8 +157,8 @@ class AuthController extends Controller
 
         // Проверка правильности полученных данных
         if ($validator->fails()) {
-            $responseData = $this->service->getFailedValidationResponseData($validator->errors());
-            return response()->json($responseData, Response::HTTP_UNPROCESSABLE_ENTITY);
+            $failedValidation = $this->service->getFailedValidationResponseData($validator->errors()->toArray());
+            return response()->json($failedValidation, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $credentials = request(['email', 'password']);

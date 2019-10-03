@@ -58,16 +58,16 @@ class Handler extends ExceptionHandler
             if ($request->url() == route('api.auth.logout')) {
                 $apiAuthService = new AuthService();
                 $unauthorizedResponseData = $apiAuthService->getUnauthorizedLogoutResponseData();
-                return response()->json($unauthorizedResponseData, Response::HTTP_UNAUTHORIZED);
+                return response()->json($unauthorizedResponseData->toArray(), Response::HTTP_UNAUTHORIZED);
             } else {
                 $apiAuthService = new AuthService();
                 $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
-                return response()->json($accessDeniedResponseData, Response::HTTP_FORBIDDEN);
+                return response()->json($accessDeniedResponseData->toArray(), Response::HTTP_FORBIDDEN);
             }
         } else if ($exception instanceof \InvalidArgumentException) {
             $apiAuthService = new AuthService();
             $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
-            return response()->json($accessDeniedResponseData, Response::HTTP_FORBIDDEN);
+            return response()->json($accessDeniedResponseData->toArray(), Response::HTTP_FORBIDDEN);
         } else {
             return response()->json([
                 'data' => [

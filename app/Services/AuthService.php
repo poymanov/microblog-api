@@ -2,6 +2,12 @@
 
 namespace App\Services;
 
+use App\Dto\ErrorResponseDto;
+use App\Dto\factories\ErrorResponseDtoFactory;
+use App\Dto\factories\SuccessfulResponseDtoFactory;
+use App\Dto\factories\ValidationDtoFactory;
+use App\Dto\ResponseDto;
+use App\Dto\ValidationDto;
 use App\User;
 use Carbon\Carbon;
 
@@ -66,51 +72,41 @@ class AuthService extends BaseService
     /**
      * Данные для ответа в json: успешное завершения сеанса регистрации пользователя
      *
-     * @return array
+     * @return ResponseDto
      */
-    public function getSuccessfullySignupResponseData()
+    public function getSuccessfullySignupResponseData(): ResponseDto
     {
-        return [
-            'data' => [
-                'message' => trans('responses.successfully_signup.message'),
-            ]
-        ];
+        return SuccessfulResponseDtoFactory::buildSuccessfulSignup();
     }
 
     /**
      * Данные для ответа в json: данные переданы в неверном формате или не указаны
      *
-     * @param $errors
-     * @return array
+     * @param array $errors
+     * @return ValidationDto
      */
-    public function getFailedValidationResponseData($errors)
+    public function getFailedValidationResponseData(array $errors): ValidationDto
     {
-        return $this->getErrorResponseScheme(trans('responses.validation_failed'), $errors);
+        return ValidationDtoFactory::buildFailed($errors);
     }
 
     /**
      * Данные для ответа в json: переданы неправильные данные для авторизации
      *
-     * @return array
+     * @return ErrorResponseDto
      */
-    public function getUnauthorizedResponseData()
+    public function getUnauthorizedResponseData(): ErrorResponseDto
     {
-        return $this->getErrorResponseScheme(
-            trans('responses.unauthorized.message'),
-            trans('responses.unauthorized.errors')
-        );
+        return ErrorResponseDtoFactory::buildUnauthorized();
     }
 
     /**
      * Данные для ответа в json: попытка прекратить пользовательский сеанс неавторизованным пользователем
      *
-     * @return array
+     * @return ErrorResponseDto
      */
-    public function getUnauthorizedLogoutResponseData()
+    public function getUnauthorizedLogoutResponseData(): ErrorResponseDto
     {
-        return $this->getErrorResponseScheme(
-            trans('responses.unauthorized_logout.message'),
-            trans('responses.unauthorized_logout.errors')
-        );
+        return ErrorResponseDtoFactory::buildUnauthorizedLogout();
     }
 }

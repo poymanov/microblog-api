@@ -8,7 +8,7 @@ use App\Dto\ValidationDto;
  * Class ValidationDtoFactory
  * @package App\Dto\factories
  *
- * Фабрика для создания объекта состояния валидации
+ * Фабрика для создания объектов с состоянием валидации
  */
 class ValidationDtoFactory
 {

@@ -3,13 +3,10 @@
 namespace Tests\Unit\DtoFactories;
 
 use App\Dto\factories\ValidationDtoFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ValidationDtoFactoryTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Создание dto с ошибками валидации
      *

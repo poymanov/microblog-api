@@ -31,7 +31,7 @@ abstract class TestCase extends BaseTestCase
     protected function getAccessDeniedResponseData()
     {
         $authService = new AuthService();
-        return $authService->getAccessDeniedResponseData();
+        return $authService->getAccessDeniedResponseData()->toArray();
     }
 
     /**
