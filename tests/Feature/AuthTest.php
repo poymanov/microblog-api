@@ -4,10 +4,9 @@ namespace Tests\Feature;
 
 use App\Services\AuthService;
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
@@ -113,11 +112,27 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Успешная авторизация
+     *
+     * @test
+     */
+    public function login_successful()
+    {
+        $this->createOauthClient();
+
+        $user = factory(User::class)->create();
+        $authData = ['email' => $user->email, 'password' => 'secret'];
+
+        $response = $this->json('post', route('api.auth.login'), $authData);
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
      * Прекращение сеанса авторизованного пользователя
      *
      * @test
      */
-    public function uthorized_user_can_logout()
+    public function authorized_user_can_logout()
     {
         $this->authApi();
 
