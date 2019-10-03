@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Dto\factories\ValidationDtoFactory;
+use App\Dto\ValidationDto;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -24,7 +26,7 @@ abstract class BaseService
      * @param Request $request
      * @return array
      */
-    public function validateJsonRequest(Request $request)
+    public function validateJsonRequest(Request $request): ValidationDto
     {
         $validationData = $request->all();
         $validationData['user_id'] = request()->user()->id;
@@ -32,12 +34,10 @@ abstract class BaseService
         $validator = Validator::make($validationData, static::VALIDATION_RULES);
 
         if ($validator->fails()) {
-            $errorData = $this->getFailedValidationData(trans('responses.validation_failed'), $validator->errors());
-
-            return [false, $errorData];
+            return ValidationDtoFactory::buildFailed($validator->errors()->toArray());
         }
 
-        return [true, $validator->getData()];
+        return ValidationDtoFactory::buildOk($validator->getData());
     }
 
     /**

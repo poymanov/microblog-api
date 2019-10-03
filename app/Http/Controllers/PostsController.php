@@ -154,13 +154,13 @@ class PostsController extends Controller
      */
     public function store()
     {
-        list($valid, $validationData) = $this->service->validateJsonRequest(request());
+        $validationResult = $this->service->validateJsonRequest(request());
 
-        if (!$valid) {
-            return response()->json($validationData, Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($validationResult->isFailed()) {
+            return response()->json($validationResult->toArray(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        Post::create($validationData);
+        Post::create($validationResult->getData());
 
         $data = $this->service->createdResponseData();
         return response()->json($data)->setStatusCode(Response::HTTP_CREATED);
