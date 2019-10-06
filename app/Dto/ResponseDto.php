@@ -2,15 +2,13 @@
 
 namespace App\Dto;
 
-use Illuminate\Contracts\Support\Arrayable;
-
 /**
  * Class ResponseDto
  * @package App\Dto
  *
  * Объект для представления стандартных ответов
  */
-class ResponseDto implements Arrayable
+class ResponseDto implements ResponseDtoInterface
 {
     /** @var string Описание ответа */
     protected $message;

@@ -7,6 +7,7 @@ use App\Dto\factories\ErrorResponseDtoFactory;
 use App\Dto\factories\SuccessfulResponseDtoFactory;
 use App\Dto\factories\ValidationDtoFactory;
 use App\Dto\ResponseDto;
+use App\Dto\ResponseDtoInterface;
 use App\Dto\ValidationDto;
 use App\User;
 use Carbon\Carbon;
@@ -58,15 +59,11 @@ class AuthService extends BaseService
     /**
      * Данные для ответа в json: успешное завершение сеанса авторизации пользователя
      *
-     * @return array
+     * @return ResponseDto
      */
-    public function getSuccessfullyLogoutResponseData()
+    public function getSuccessfullyLogoutResponseData(): ResponseDtoInterface
     {
-        return [
-            'data' => [
-                'message' => trans('responses.successfully_logout.message'),
-            ]
-        ];
+        return SuccessfulResponseDtoFactory::buildSuccessfulLogout();
     }
 
     /**
@@ -74,7 +71,7 @@ class AuthService extends BaseService
      *
      * @return ResponseDto
      */
-    public function getSuccessfullySignupResponseData(): ResponseDto
+    public function getSuccessfullySignupResponseData(): ResponseDtoInterface
     {
         return SuccessfulResponseDtoFactory::buildSuccessfulSignup();
     }

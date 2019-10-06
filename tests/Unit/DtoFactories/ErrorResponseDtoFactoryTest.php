@@ -14,12 +14,10 @@ class ErrorResponseDtoFactoryTest extends TestCase
      */
     public function response_access_denied()
     {
-        $expected = [
-            'data' => [
-                'message' => trans('responses.access_denied.message'),
-                'errors' => trans('responses.access_denied.errors'),
-            ],
-        ];
+        $expected = $this->buildErrorResponseData(
+            trans('responses.access_denied.message'),
+            trans('responses.access_denied.errors')
+        );
 
         $dto = ErrorResponseDtoFactory::buildAccessDenied();
         $this->assertEquals($dto->toArray(), $expected);
@@ -32,12 +30,10 @@ class ErrorResponseDtoFactoryTest extends TestCase
      */
     public function response_unauthorized()
     {
-        $expected = [
-            'data' => [
-                'message' => trans('responses.unauthorized.message'),
-                'errors' => trans('responses.unauthorized.errors'),
-            ],
-        ];
+        $expected = $this->buildErrorResponseData(
+            trans('responses.unauthorized.message'),
+            trans('responses.unauthorized.errors')
+        );
 
         $dto = ErrorResponseDtoFactory::buildUnauthorized();
         $this->assertEquals($dto->toArray(), $expected);
@@ -50,12 +46,10 @@ class ErrorResponseDtoFactoryTest extends TestCase
      */
     public function response_unauthorized_logout()
     {
-        $expected = [
-            'data' => [
-                'message' => trans('responses.unauthorized_logout.message'),
-                'errors' => trans('responses.unauthorized_logout.errors'),
-            ],
-        ];
+        $expected = $this->buildErrorResponseData(
+            trans('responses.unauthorized_logout.message'),
+            trans('responses.unauthorized_logout.errors')
+        );
 
         $dto = ErrorResponseDtoFactory::buildUnauthorizedLogout();
         $this->assertEquals($dto->toArray(), $expected);

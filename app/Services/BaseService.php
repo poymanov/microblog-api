@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Dto\ErrorResponseDto;
 use App\Dto\factories\ErrorResponseDtoFactory;
+use App\Dto\factories\SuccessfulResponseDtoFactory;
 use App\Dto\factories\ValidationDtoFactory;
+use App\Dto\ResponseDto;
+use App\Dto\ResponseDtoInterface;
 use App\Dto\ValidationDto;
 use Illuminate\Http\Request;
 use Validator;
@@ -45,21 +48,21 @@ abstract class BaseService
     /**
      * Ответ "Успешное удаление"
      *
-     * @return array
+     * @return ResponseDto
      */
-    public function deletedResponseData()
+    public function deletedResponseData(): ResponseDtoInterface
     {
-        return $this->createJsonResponseData(trans('responses.successfully_deleted'));
+        return SuccessfulResponseDtoFactory::buildSuccessfulDeleted();
     }
 
     /**
      * Ответ "Успешное создание"
      *
-     * @return array
+     * @return ErrorResponseDto
      */
-    public function createdResponseDataBase()
+    public function createdResponseDataBase(): ResponseDtoInterface
     {
-        return $this->createJsonResponseData(trans('responses.successfully_created'));
+        return SuccessfulResponseDtoFactory::buildSuccessfulCreated();
     }
 
     /**
@@ -70,38 +73,5 @@ abstract class BaseService
     public function getAccessDeniedResponseData(): ErrorResponseDto
     {
         return ErrorResponseDtoFactory::buildAccessDenied();
-    }
-
-    /**
-     * Заготовка для ответа
-     *
-     * @param $message
-     * @return array
-     */
-    protected function createJsonResponseData($message)
-    {
-        return [
-            'data' => [
-                'message' => $message,
-            ]
-        ];
-    }
-
-
-    /**
-     * Базовая структура данных ответа для json
-     *
-     * @param $message
-     * @param $errors
-     * @return array
-     */
-    protected function getErrorResponseScheme($message, $errors)
-    {
-        return [
-            'data' => [
-                'message' => $message,
-                'errors' => $errors,
-            ],
-        ];
     }
 }

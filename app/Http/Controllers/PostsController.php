@@ -163,7 +163,7 @@ class PostsController extends Controller
         Post::create($validationResult->getData());
 
         $data = $this->service->createdResponseData();
-        return response()->json($data)->setStatusCode(Response::HTTP_CREATED);
+        return response()->json($data->toArray())->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**

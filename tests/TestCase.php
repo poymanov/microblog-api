@@ -15,7 +15,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Авторизация пользователя для API
      */
-    protected function authApi()
+    protected function authApi(): User
     {
         $user = factory(User::class)->create();
         Passport::actingAs($user);
@@ -28,7 +28,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return array
      */
-    protected function getAccessDeniedResponseData()
+    protected function getAccessDeniedResponseData(): array
     {
         $authService = new AuthService();
         return $authService->getAccessDeniedResponseData()->toArray();
@@ -44,5 +44,38 @@ abstract class TestCase extends BaseTestCase
         );
 
         Passport::actingAsClient($client);
+    }
+
+    /**
+     * Создание базовой структуры для примера ответа
+     *
+     * @param $message
+     * @return array
+     */
+    protected function buildResponseData($message): array
+    {
+        return [
+            'data' => [
+                'message' => $message,
+            ]
+        ];
+    }
+
+
+    /**
+     * Создание базовой структуры для примера ответа c описанием ошибки
+     *
+     * @param $message
+     * @param $errors
+     * @return array
+     */
+    protected function buildErrorResponseData($message, $errors): array
+    {
+        return [
+            'data' => [
+                'message' => $message,
+                'errors' => $errors,
+            ],
+        ];
     }
 }

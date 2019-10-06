@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Dto\ResponseDtoInterface;
+
 /**
  * Class PostsService
  * @package App\Services
@@ -18,9 +20,9 @@ class PostsService extends BaseService
     /**
      * Ответ "Успешное создание"
      *
-     * @return array
+     * @return ResponseDtoInterface
      */
-    public function createdResponseData()
+    public function createdResponseData(): ResponseDtoInterface
     {
         return $this->createdResponseDataBase();
     }
