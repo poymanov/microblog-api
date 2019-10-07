@@ -57,13 +57,43 @@ class ErrorResponseDtoFactory
     /**
      * Ответ с ошибкой "Ошибки валидации"
      *
-     * @param $errors
+     * @param array $errors
      * @return ErrorResponseDto
      */
-    public static function buildValidationFailed($errors): ErrorResponseDto
+    public static function buildValidationFailed(array $errors): ErrorResponseDto
     {
         $dto = new ErrorResponseDto();
         $dto->setMessage(trans('responses.validation_failed'));
+        $dto->setErrors($errors);
+
+        return $dto;
+    }
+
+    /**
+     * Ответ с ошибкой "Объект не найден"
+     *
+     * @param array $errors
+     * @return ErrorResponseDto
+     */
+    public static function buildNotFound(array $errors): ErrorResponseDto
+    {
+        $dto = new ErrorResponseDto();
+        $dto->setMessage(trans('responses.not_found'));
+        $dto->setErrors($errors);
+
+        return $dto;
+    }
+
+    /**
+     * Ответ с ошибкой "Ошибка без категории"
+     *
+     * @param array $errors
+     * @return ErrorResponseDto
+     */
+    public static function buildSomethingWentWrong(array $errors): ErrorResponseDto
+    {
+        $dto = new ErrorResponseDto();
+        $dto->setMessage(trans('something_went_wrong'));
         $dto->setErrors($errors);
 
         return $dto;

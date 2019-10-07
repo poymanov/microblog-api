@@ -96,14 +96,4 @@ class AuthService extends BaseService
     {
         return ErrorResponseDtoFactory::buildUnauthorized();
     }
-
-    /**
-     * Данные для ответа в json: попытка прекратить пользовательский сеанс неавторизованным пользователем
-     *
-     * @return ErrorResponseDto
-     */
-    public function getUnauthorizedLogoutResponseData(): ErrorResponseDto
-    {
-        return ErrorResponseDtoFactory::buildUnauthorizedLogout();
-    }
 }

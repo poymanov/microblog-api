@@ -71,4 +71,36 @@ class ErrorResponseDtoFactoryTest extends TestCase
         $dto = ErrorResponseDtoFactory::buildValidationFailed($errors);
         $this->assertEquals($dto->toArray(), $expected);
     }
+
+    /**
+     * Создание ответа "Объект не найден"
+     *
+     * @test
+     */
+    public function response_not_found()
+    {
+        $errors = [
+            'id' => 1,
+        ];
+
+        $expected = $this->buildErrorResponseData(trans('responses.not_found'), $errors);
+
+        $dto = ErrorResponseDtoFactory::buildNotFound($errors);
+        $this->assertEquals($dto->toArray(), $expected);
+    }
+
+    /**
+     * Создание ответа "Ошибка без категории"
+     *
+     * @test
+     */
+    public function response_something_went_wrong()
+    {
+        $errors = ['Critical error'];
+
+        $expected = $this->buildErrorResponseData(trans('something_went_wrong'), $errors);
+
+        $dto = ErrorResponseDtoFactory::buildSomethingWentWrong($errors);
+        $this->assertEquals($dto->toArray(), $expected);
+    }
 }

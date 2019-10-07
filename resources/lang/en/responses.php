@@ -12,4 +12,6 @@ return [
     'successfully_signup.message' => 'User created',
     'successfully_created' => 'Successfully created',
     'successfully_deleted' => 'Successfully deleted',
+    'not_found' => 'Resource not found',
+    'something_went_wrong' => 'Something went wrong',
 ];

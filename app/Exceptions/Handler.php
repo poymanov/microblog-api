@@ -3,10 +3,12 @@
 namespace App\Exceptions;
 
 use App\Dto\factories\ErrorResponseDtoFactory;
-use App\Services\AuthService;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
+use InvalidArgumentException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,8 +34,9 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
-     * @return void
+     * @param Exception $exception
+     * @return mixed|void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
@@ -49,36 +52,28 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-            return response()->json([
-                'data' => [
-                    'message' => 'Resource not found',
-                ]
-            ], Response::HTTP_NOT_FOUND);
-        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+        if ($exception instanceof ModelNotFoundException) {
+            $dto = ErrorResponseDtoFactory::buildNotFound(['id' => $exception->getIds()]);
+            $status = Response::HTTP_NOT_FOUND;
+        } else if ($exception instanceof AuthenticationException) {
             if ($request->url() == route('api.auth.logout')) {
-                $apiAuthService = new AuthService();
-                $unauthorizedResponseData = $apiAuthService->getUnauthorizedLogoutResponseData();
-                return response()->json($unauthorizedResponseData->toArray(), Response::HTTP_UNAUTHORIZED);
+                $dto = ErrorResponseDtoFactory::buildUnauthorizedLogout();
+                $status = Response::HTTP_UNAUTHORIZED;
             } else {
-                $apiAuthService = new AuthService();
-                $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
-                return response()->json($accessDeniedResponseData->toArray(), Response::HTTP_FORBIDDEN);
+                $dto = ErrorResponseDtoFactory::buildAccessDenied();
+                $status = Response::HTTP_FORBIDDEN;
             }
-        } else if ($exception instanceof \InvalidArgumentException) {
-            $apiAuthService = new AuthService();
-            $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
-            return response()->json($accessDeniedResponseData->toArray(), Response::HTTP_FORBIDDEN);
+        } else if ($exception instanceof InvalidArgumentException) {
+            $dto = ErrorResponseDtoFactory::buildAccessDenied();
+            $status = Response::HTTP_FORBIDDEN;
         } else if ($exception instanceof ValidationException) {
             $dto = ErrorResponseDtoFactory::buildValidationFailed($exception->getErrors());
-            return response()->json($dto, Response::HTTP_UNPROCESSABLE_ENTITY);
+            $status = Response::HTTP_UNPROCESSABLE_ENTITY;
         } else {
-            return response()->json([
-                'data' => [
-                    'message' => 'Something went wrong',
-                    'errors' => $exception->getMessage()
-                ]
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $dto = ErrorResponseDtoFactory::buildSomethingWentWrong([$exception->getMessage()]);
+            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        return response()->json($dto->toArray(), $status);
     }
 }
