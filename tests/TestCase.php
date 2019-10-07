@@ -65,11 +65,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * Создание базовой структуры для примера ответа c описанием ошибки
      *
-     * @param $message
-     * @param $errors
+     * @param string $message
+     * @param array $errors
      * @return array
      */
-    protected function buildErrorResponseData($message, $errors): array
+    protected function buildErrorResponseData(string $message, array $errors): array
     {
         return [
             'data' => [

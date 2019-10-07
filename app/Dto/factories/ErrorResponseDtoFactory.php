@@ -21,7 +21,7 @@ class ErrorResponseDtoFactory
     {
         $dto = new ErrorResponseDto();
         $dto->setMessage(trans('responses.access_denied.message'));
-        $dto->setErrors(trans('responses.access_denied.errors'));
+        $dto->setErrors([trans('responses.access_denied.errors')]);
 
         return $dto;
     }
@@ -35,7 +35,7 @@ class ErrorResponseDtoFactory
     {
         $dto = new ErrorResponseDto();
         $dto->setMessage(trans('responses.unauthorized.message'));
-        $dto->setErrors(trans('responses.unauthorized.errors'));
+        $dto->setErrors([trans('responses.unauthorized.errors')]);
 
         return $dto;
     }
@@ -49,7 +49,22 @@ class ErrorResponseDtoFactory
     {
         $dto = new ErrorResponseDto();
         $dto->setMessage(trans('responses.unauthorized_logout.message'));
-        $dto->setErrors(trans('responses.unauthorized_logout.errors'));
+        $dto->setErrors([trans('responses.unauthorized_logout.errors')]);
+
+        return $dto;
+    }
+
+    /**
+     * Ответ с ошибкой "Ошибки валидации"
+     *
+     * @param $errors
+     * @return ErrorResponseDto
+     */
+    public static function buildValidationFailed($errors): ErrorResponseDto
+    {
+        $dto = new ErrorResponseDto();
+        $dto->setMessage(trans('responses.validation_failed'));
+        $dto->setErrors($errors);
 
         return $dto;
     }

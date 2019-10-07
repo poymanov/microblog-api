@@ -16,7 +16,7 @@ class ErrorResponseDtoFactoryTest extends TestCase
     {
         $expected = $this->buildErrorResponseData(
             trans('responses.access_denied.message'),
-            trans('responses.access_denied.errors')
+            [trans('responses.access_denied.errors')]
         );
 
         $dto = ErrorResponseDtoFactory::buildAccessDenied();
@@ -32,7 +32,7 @@ class ErrorResponseDtoFactoryTest extends TestCase
     {
         $expected = $this->buildErrorResponseData(
             trans('responses.unauthorized.message'),
-            trans('responses.unauthorized.errors')
+            [trans('responses.unauthorized.errors')]
         );
 
         $dto = ErrorResponseDtoFactory::buildUnauthorized();
@@ -48,10 +48,27 @@ class ErrorResponseDtoFactoryTest extends TestCase
     {
         $expected = $this->buildErrorResponseData(
             trans('responses.unauthorized_logout.message'),
-            trans('responses.unauthorized_logout.errors')
+            [trans('responses.unauthorized_logout.errors')]
         );
 
         $dto = ErrorResponseDtoFactory::buildUnauthorizedLogout();
+        $this->assertEquals($dto->toArray(), $expected);
+    }
+
+    /**
+     * Создание ответа "Ошибка валидации"
+     *
+     * @test
+     */
+    public function response_validation_failed()
+    {
+        $errors = [
+            'name' => 'The text field is required.',
+        ];
+
+        $expected = $this->buildErrorResponseData(trans('responses.validation_failed'), $errors);
+
+        $dto = ErrorResponseDtoFactory::buildValidationFailed($errors);
         $this->assertEquals($dto->toArray(), $expected);
     }
 }

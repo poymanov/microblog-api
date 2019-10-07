@@ -29,7 +29,6 @@ class ValidationDtoFactoryTest extends TestCase
         $this->assertTrue($dto->isFailed());
         $this->assertFalse($dto->isOk());
         $this->assertEquals($dto->toArray(), $expected);
-        $this->assertEmpty($dto->getData());
     }
 
     /**
@@ -39,21 +38,16 @@ class ValidationDtoFactoryTest extends TestCase
      */
     public function successful_validation_dto()
     {
-        $data = [
-            'name' => 'test',
-        ];
-
         $expected = [
             'data' => [
-                'message' => null,
+                'message' => trans('responses.successfully_created'),
                 'errors' => [],
             ],
         ];
 
-        $dto = ValidationDtoFactory::buildOk($data);
+        $dto = ValidationDtoFactory::buildOk();
         $this->assertTrue($dto->isOk());
         $this->assertFalse($dto->isFailed());
         $this->assertEquals($dto->toArray(), $expected);
-        $this->assertEquals($dto->getData(), $data);
     }
 }

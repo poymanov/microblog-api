@@ -21,16 +21,15 @@ class AuthTest extends TestCase
         $response = $this->json('post', route('api.auth.signup'));
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $response->assertExactJson([
-            'data' => [
-                'message' => trans('responses.validation_failed'),
-                'errors' => [
-                    'name' => ['The name field is required.'],
-                    'email' => ['The email field is required.'],
-                    'password' => ['The password field is required.'],
-                ],
-            ]
-        ]);
+        $errors = [
+            'name' => ['The name field is required.'],
+            'email' => ['The email field is required.'],
+            'password' => ['The password field is required.'],
+        ];
+
+        $expected = $this->buildErrorResponseData(trans('responses.validation_failed'), $errors);
+
+        $response->assertExactJson($expected);
     }
 
     /**
@@ -47,11 +46,8 @@ class AuthTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $response->assertExactJson([
-            'data' => [
-                'message' => trans('responses.successfully_signup.message'),
-            ]
-        ]);
+        $expected = $this->buildResponseData(trans('responses.successfully_signup.message'));
+        $response->assertExactJson($expected);
 
         $this->assertDatabaseHas('users', ['name' => $user->name, 'email' => $user->email]);
     }
@@ -65,16 +61,17 @@ class AuthTest extends TestCase
     {
         $response = $this->json('post', route('api.auth.login'));
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertExactJson([
-            'data' => [
-                'message' => trans('responses.validation_failed'),
-                'errors' => [
-                    'email' => ['The email field is required.'],
-                    'password' => ['The password field is required.'],
-                ],
-            ]
-        ]);
+
+        $errors = [
+            'email' => ['The email field is required.'],
+            'password' => ['The password field is required.'],
+        ];
+
+        $expected = $this->buildErrorResponseData(trans('responses.validation_failed'), $errors);
+
+        $response->assertExactJson($expected);
     }
+
     /**
      * Попытка авторизации данными пользователя, которого нет в базе
      *
@@ -85,12 +82,13 @@ class AuthTest extends TestCase
         $authData = ['email' => 'test@test.ru', 'password' => '123qwe'];
         $response = $this->json('post', route('api.auth.login'), $authData);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $response->assertExactJson([
-            'data' => [
-                'message' => trans('responses.unauthorized.message'),
-                'errors' => trans('responses.unauthorized.errors'),
-            ]
-        ]);
+
+        $expected = $this->buildErrorResponseData(
+            trans('responses.unauthorized.message'),
+            [trans('responses.unauthorized.errors')]
+        );
+
+        $response->assertExactJson($expected);
     }
 
     /**
@@ -102,12 +100,13 @@ class AuthTest extends TestCase
     {
         $response = $this->json('get', route('api.auth.logout'));
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $response->assertExactJson([
-            'data' => [
-                'message' => trans('responses.unauthorized_logout.message'),
-                'errors' => trans('responses.unauthorized_logout.errors'),
-            ]
-        ]);
+
+        $expected = $this->buildErrorResponseData(
+            trans('responses.unauthorized_logout.message'),
+            [trans('responses.unauthorized_logout.errors')]
+        );
+
+        $response->assertExactJson($expected);
     }
 
     /**
@@ -137,10 +136,9 @@ class AuthTest extends TestCase
 
         $response = $this->json('get', route('api.auth.logout'));
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertExactJson([
-            'data' => [
-                'message' => trans('responses.successfully_logout.message'),
-            ]
-        ]);
+
+        $expected = $this->buildResponseData(trans('responses.successfully_logout.message'));
+
+        $response->assertExactJson($expected);
     }
 }

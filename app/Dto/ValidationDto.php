@@ -19,9 +19,6 @@ class ValidationDto extends ResponseDto
     /** @var array Список ошибок */
     public $errors = [];
 
-    /** @var array Успешно провалидированные данные */
-    protected $data = [];
-
     /** @var int Состояние валидации объекта */
     private $status;
 
@@ -43,22 +40,6 @@ class ValidationDto extends ResponseDto
     public function isFailed()
     {
         return $this->status == self::STATUS_FAILED;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param array $data
-     */
-    public function setData(array $data): void
-    {
-        $this->data = $data;
     }
 
     /**

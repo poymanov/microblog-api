@@ -10,7 +10,7 @@ namespace App\Dto;
  */
 class ErrorResponseDto extends ResponseDto
 {
-    /** @var string Описание ошибок */
+    /** @var array Описание ошибок */
     protected $errors = [];
 
     /**
@@ -27,17 +27,17 @@ class ErrorResponseDto extends ResponseDto
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getErrors(): string
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
     /**
-     * @param string $errors
+     * @param array $errors
      */
-    public function setErrors(string $errors): void
+    public function setErrors(array $errors): void
     {
         $this->errors = $errors;
     }

@@ -31,13 +31,12 @@ class ValidationDtoFactory
     /**
      * Создание объекта с успешным статусом
      *
-     * @param array $data
      * @return ValidationDto
      */
-    public static function buildOk(array $data): ValidationDto
+    public static function buildOk(): ValidationDto
     {
         $dto = new ValidationDto();
-        $dto->setData($data);
+        $dto->setMessage(trans('responses.successfully_created'));
         $dto->setOk();
 
         return $dto;

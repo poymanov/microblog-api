@@ -48,12 +48,6 @@ class PostsController extends Controller
     }
 
     /**
-     * Список публикаций пользователя
-     *
-     * @param User $user
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    /**
      * @OA\Get(
      *     path="/api/posts/{id}",
      *     tags={"post"},
@@ -104,16 +98,17 @@ class PostsController extends Controller
      *     @OA\Parameter(name="id", in="path", required=true, description="Идентификатор публикации", @OA\Schema(type="integer")),
      * )
      */
+    /**
+     * Список публикаций пользователя
+     *
+     * @param User $user
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index(User $user)
     {
-        return PostResource::collection(Post::where(['user_id' => $user->id])->orderBy('created_at', 'desc')->paginate(10));
+        return PostResource::collection($this->service->getUserPosts($user->id));
     }
 
-    /**
-     * Создание публикации
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     /**
      * @OA\Post(
      *     path="/api/posts",
@@ -152,27 +147,19 @@ class PostsController extends Controller
      *     @OA\Parameter(name="text", in="query", required=true, description="Текст публикации", @OA\Schema(type="string", maxLength=300)),
      * )
      */
+    /**
+     * Создание публикации
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ValidationException
+     */
     public function store()
     {
-        $validationResult = $this->service->validateJsonRequest(request());
+        $validationResult = $this->service->createPost(request()->all(), request()->user()->id);
 
-        if ($validationResult->isFailed()) {
-            return response()->json($validationResult->toArray(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        Post::create($validationResult->getData());
-
-        $data = $this->service->createdResponseData();
-        return response()->json($data->toArray())->setStatusCode(Response::HTTP_CREATED);
+        return response()->json($validationResult->toArray(), Response::HTTP_CREATED);
     }
 
-    /**
-     * Удаление публикации
-     *
-     * @param Post $post
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
     /**
      * @OA\Delete(
      *     path="/api/posts/{id}",
@@ -198,6 +185,13 @@ class PostsController extends Controller
      *     ),
      *     @OA\Parameter(name="id", in="path", required=true, description="Идентификатор публикации", @OA\Schema(type="integer")),
      * )
+     */
+    /**
+     * Удаление публикации
+     *
+     * @param Post $post
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy(Post $post)
     {

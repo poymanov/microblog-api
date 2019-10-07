@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Dto\factories\ErrorResponseDtoFactory;
 use App\Services\AuthService;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -68,6 +69,9 @@ class Handler extends ExceptionHandler
             $apiAuthService = new AuthService();
             $accessDeniedResponseData = $apiAuthService->getAccessDeniedResponseData();
             return response()->json($accessDeniedResponseData->toArray(), Response::HTTP_FORBIDDEN);
+        } else if ($exception instanceof ValidationException) {
+            $dto = ErrorResponseDtoFactory::buildValidationFailed($exception->getErrors());
+            return response()->json($dto, Response::HTTP_UNPROCESSABLE_ENTITY);
         } else {
             return response()->json([
                 'data' => [

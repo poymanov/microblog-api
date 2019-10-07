@@ -4,10 +4,9 @@ namespace Tests\Feature;
 
 use App\Post;
 use App\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
+use Tests\TestCase;
 
 class PostTest extends TestCase
 {
@@ -40,14 +39,14 @@ class PostTest extends TestCase
 
         $response = $this->json('post', $url, []);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertExactJson([
-            'data' => [
-                'message' => 'Validation failed',
-                'errors' => [
-                    'text' => ['The text field is required.'],
-                ],
-            ]
-        ]);
+
+        $errors = [
+            'text' => ['The text field is required.'],
+        ];
+
+        $expected = $this->buildErrorResponseData(trans('responses.validation_failed'), $errors);
+
+        $response->assertExactJson($expected);
     }
 
     /**
@@ -69,11 +68,9 @@ class PostTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $response->assertExactJson([
-            'data' => [
-                'message' => 'Successfully created',
-            ]
-        ]);
+        $expected = $this->buildResponseData(trans('responses.successfully_created'));
+
+        $response->assertExactJson($expected);
     }
 
     /**
@@ -126,11 +123,9 @@ class PostTest extends TestCase
             'id' => $post->id,
         ]);
 
-        $response->assertExactJson([
-            'data' => [
-                'message' => 'Successfully deleted',
-            ]
-        ]);
+        $expected = $this->buildResponseData(trans('responses.successfully_deleted'));
+
+        $response->assertExactJson($expected);
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Dto\factories\ValidationDtoFactory;
 use App\Dto\ResponseDto;
 use App\Dto\ResponseDtoInterface;
 use App\Dto\ValidationDto;
+use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -43,6 +44,22 @@ abstract class BaseService
         }
 
         return ValidationDtoFactory::buildOk($validator->getData());
+    }
+
+    /**
+     * Валидация данных
+     *
+     * @param array $data
+     * @param array $rules
+     * @throws ValidationException
+     */
+    public function validateData(array $data, array $rules)
+    {
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator->errors()->toArray());
+        }
     }
 
     /**
