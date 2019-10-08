@@ -13,6 +13,17 @@ use App\Post;
 class PostsRepository
 {
     /**
+     * Получение публикации по id
+     *
+     * @param int $id
+     * @return Post|null
+     */
+    public function getById(int $id): ?Post
+    {
+        return Post::find($id);
+    }
+
+    /**
      * Получение публикаций пользователя
      *
      * @param int $userId
@@ -29,8 +40,19 @@ class PostsRepository
      *
      * @param $data
      */
-    public function create($data)
+    public function create(array $data): void
     {
         Post::create($data);
+    }
+
+    /**
+     * Удаление публикации
+     *
+     * @param int $id
+     * @throws \Exception
+     */
+    public function delete(int $id): void
+    {
+        $this->getById($id)->delete();
     }
 }

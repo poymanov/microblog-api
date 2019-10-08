@@ -69,7 +69,7 @@ abstract class TestCase extends BaseTestCase
      * @param array $errors
      * @return array
      */
-    protected function buildErrorResponseData(string $message, array $errors): array
+    protected function buildErrorResponseData(string $message, array $errors = []): array
     {
         return [
             'data' => [

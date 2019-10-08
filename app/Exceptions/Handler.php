@@ -53,7 +53,10 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof ModelNotFoundException) {
-            $dto = ErrorResponseDtoFactory::buildNotFound(['id' => $exception->getIds()]);
+            $dto = ErrorResponseDtoFactory::buildNotFound();
+            $status = Response::HTTP_NOT_FOUND;
+        } else if ($exception instanceof NotFoundException) {
+            $dto = ErrorResponseDtoFactory::buildNotFound();
             $status = Response::HTTP_NOT_FOUND;
         } else if ($exception instanceof AuthenticationException) {
             if ($request->url() == route('api.auth.logout')) {
@@ -63,6 +66,9 @@ class Handler extends ExceptionHandler
                 $dto = ErrorResponseDtoFactory::buildAccessDenied();
                 $status = Response::HTTP_FORBIDDEN;
             }
+        } else if ($exception instanceof AccessDeniedException) {
+            $dto = ErrorResponseDtoFactory::buildAccessDenied();
+            $status = Response::HTTP_FORBIDDEN;
         } else if ($exception instanceof InvalidArgumentException) {
             $dto = ErrorResponseDtoFactory::buildAccessDenied();
             $status = Response::HTTP_FORBIDDEN;

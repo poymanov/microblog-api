@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
-use App\Post;
 use App\Services\PostsService;
-use App\User;
 use Illuminate\Http\Response;
 
 class PostsController extends Controller
@@ -101,12 +99,13 @@ class PostsController extends Controller
     /**
      * Список публикаций пользователя
      *
-     * @param User $user
+     * @param int $userId
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws \App\Exceptions\NotFoundException
      */
-    public function index(User $user)
+    public function index(int $userId)
     {
-        return PostResource::collection($this->service->getUserPosts($user->id));
+        return PostResource::collection($this->service->getUserPosts($userId));
     }
 
     /**
@@ -152,6 +151,7 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      * @throws \App\Exceptions\ValidationException
+     * @throws \App\Exceptions\NotFoundException
      */
     public function store()
     {
@@ -189,23 +189,15 @@ class PostsController extends Controller
     /**
      * Удаление публикации
      *
-     * @param Post $post
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
+     * @throws \App\Exceptions\AccessDeniedException
+     * @throws \App\Exceptions\NotFoundException
      */
-    public function destroy(Post $post)
+    public function destroy(int $id)
     {
-        // @todo использовать политики Laravel для проверки что публикация принадлежит текущему пользователю
-        $user = request()->user();
+        $deletingResult = $this->service->deletePost($id, request()->user()->id);
 
-        if ($user->id !== $post->user->id) {
-            $data = $this->service->getAccessDeniedResponseData();
-            return response()->json($data)->setStatusCode(Response::HTTP_FORBIDDEN);
-        }
-
-        $post->delete();
-
-        $data = $this->service->deletedResponseData();
-        return response()->json($data)->setStatusCode(Response::HTTP_OK);
+        return response()->json($deletingResult->toArray(), Response::HTTP_OK);
     }
 }

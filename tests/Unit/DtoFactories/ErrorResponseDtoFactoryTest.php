@@ -79,13 +79,9 @@ class ErrorResponseDtoFactoryTest extends TestCase
      */
     public function response_not_found()
     {
-        $errors = [
-            'id' => 1,
-        ];
+        $expected = $this->buildErrorResponseData(trans('responses.not_found'), []);
 
-        $expected = $this->buildErrorResponseData(trans('responses.not_found'), $errors);
-
-        $dto = ErrorResponseDtoFactory::buildNotFound($errors);
+        $dto = ErrorResponseDtoFactory::buildNotFound();
         $this->assertEquals($dto->toArray(), $expected);
     }
 

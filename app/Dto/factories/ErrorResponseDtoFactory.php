@@ -72,14 +72,12 @@ class ErrorResponseDtoFactory
     /**
      * Ответ с ошибкой "Объект не найден"
      *
-     * @param array $errors
      * @return ErrorResponseDto
      */
-    public static function buildNotFound(array $errors): ErrorResponseDto
+    public static function buildNotFound(): ErrorResponseDto
     {
         $dto = new ErrorResponseDto();
         $dto->setMessage(trans('responses.not_found'));
-        $dto->setErrors($errors);
 
         return $dto;
     }

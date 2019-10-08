@@ -106,6 +106,24 @@ class PostTest extends TestCase
     }
 
     /**
+     * Удаление несуществующей публикации
+     *
+     * @test
+     */
+    public function delete_not_existed_post()
+    {
+        $this->authApi();
+
+        $url = route('api.posts.destroy', 999);
+
+        $response = $this->json('delete', $url);
+
+        $expected = $this->buildErrorResponseData(trans('responses.not_found'));
+
+        $response->assertExactJson($expected);
+    }
+
+    /**
      * Удаление публикации
      *
      * @test
@@ -125,6 +143,22 @@ class PostTest extends TestCase
 
         $expected = $this->buildResponseData(trans('responses.successfully_deleted'));
 
+        $response->assertExactJson($expected);
+    }
+
+    /**
+     * Получение публикаций несуществующего пользователя
+     *
+     * @test
+     */
+    public function get_not_existed_user_post()
+    {
+        $expected = $this->buildErrorResponseData(trans('responses.not_found'));
+
+        $url = route('api.posts.user', 999);
+        $response = $this->json('get', $url);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
         $response->assertExactJson($expected);
     }
 
