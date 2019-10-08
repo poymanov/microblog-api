@@ -9,9 +9,7 @@ use App\Dto\factories\ValidationDtoFactory;
 use App\Dto\ResponseDto;
 use App\Dto\ResponseDtoInterface;
 use App\Dto\ValidationDto;
-use App\Exceptions\ValidationException;
-use Illuminate\Http\Request;
-use Validator;
+
 
 /**
  * Class BaseService
@@ -26,41 +24,7 @@ abstract class BaseService
      */
     const VALIDATION_RULES = [];
 
-    /**
-     * Валидация запроса и возврат ответа в json
-     * 
-     * @param Request $request
-     * @return ValidationDto
-     */
-    public function validateJsonRequest(Request $request): ValidationDto
-    {
-        $validationData = $request->all();
-        $validationData['user_id'] = request()->user()->id;
 
-        $validator = Validator::make($validationData, static::VALIDATION_RULES);
-
-        if ($validator->fails()) {
-            return ValidationDtoFactory::buildFailed($validator->errors()->toArray());
-        }
-
-        return ValidationDtoFactory::buildOk($validator->getData());
-    }
-
-    /**
-     * Валидация данных
-     *
-     * @param array $data
-     * @param array $rules
-     * @throws ValidationException
-     */
-    public function validateData(array $data, array $rules)
-    {
-        $validator = Validator::make($data, $rules);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator->errors()->toArray());
-        }
-    }
 
     /**
      * Ответ "Успешное удаление"

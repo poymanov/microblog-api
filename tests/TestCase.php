@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\Services\AuthService;
+use App\Dto\factories\ErrorResponseDtoFactory;
 use App\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Passport\ClientRepository;
@@ -30,8 +30,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getAccessDeniedResponseData(): array
     {
-        $authService = new AuthService();
-        return $authService->getAccessDeniedResponseData()->toArray();
+        return ErrorResponseDtoFactory::buildAccessDenied()->toArray();
     }
 
     /**

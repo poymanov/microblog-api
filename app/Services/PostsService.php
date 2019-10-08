@@ -8,6 +8,7 @@ use App\Exceptions\AccessDeniedException;
 use App\Exceptions\NotFoundException;
 use App\Post;
 use App\Repository\PostsRepository;
+use Exception;
 
 /**
  * Class PostsService
@@ -100,8 +101,7 @@ class PostsService extends BaseService
             'user_id' => 'required|exists:users,id',
         ];
 
-        $this->validateData($data, $validationRules);
-
+        $this->repository->validateData($data, $validationRules);
         $this->repository->create($data);
 
         return SuccessfulResponseDtoFactory::buildSuccessfulCreated();
@@ -115,6 +115,7 @@ class PostsService extends BaseService
      * @return ResponseDtoInterface
      * @throws AccessDeniedException
      * @throws NotFoundException
+     * @throws Exception
      */
     public function deletePost(int $postId, int $userId): ResponseDtoInterface
     {

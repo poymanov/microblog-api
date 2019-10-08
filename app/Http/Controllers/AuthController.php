@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AuthService;
-use App\User;
-use Auth;
-use Hash;
+use App\Exceptions\UnauthorizedException;
+use App\Exceptions\ValidationException;
+use App\Services\UsersService;
 use Illuminate\Http\Response;
-use Validator;
 
 class AuthController extends Controller
 {
+    /** @var UsersService */
     private $service;
 
     /**
@@ -30,15 +29,10 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->service = new AuthService();
+        $this->service = app(UsersService::class);
         $this->middleware('auth:api')->only('logout');
     }
 
-    /**
-     * Авторизация пользователей
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     /**
      * @OA\Post(
      *     path="/api/auth/signup",
@@ -73,40 +67,20 @@ class AuthController extends Controller
      *     @OA\Parameter(name="email", in="query", required=true, description="Email пользователя", @OA\Schema(type="string")),
      *     @OA\Parameter(name="password", in="query", required=true, description="Пароль", @OA\Schema(type="string")),
      *     @OA\Parameter(name="password_confirmation", in="query", required=true, description="Подтверждение пароля", @OA\Schema(type="string")),
-
      * )
+     */
+    /**
+     * Авторизация пользователей
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ValidationException
      */
     public function signup()
     {
-        $validator = Validator::make(request()->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
-
-        // Проверка правильности полученных данных
-        if ($validator->fails()) {
-            $failedValidation = $this->service->getFailedValidationResponseData($validator->errors()->toArray());
-            return response()->json($failedValidation, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $user = User::create([
-            'name' => request()->name,
-            'email' => request()->email,
-            'password' => Hash::make(request()->password),
-        ]);
-
-        $user->save();
-
-        $responseData = $this->service->getSuccessfullySignupResponseData();
-        return response()->json($responseData, Response::HTTP_CREATED);
+        $responseData = $this->service->registerUser(request()->all());
+        return response()->json($responseData->toArray(), Response::HTTP_CREATED);
     }
 
-    /**
-     * Авторизация пользователя
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     /**
      * @OA\Post(
      *     path="/api/auth/login",
@@ -148,42 +122,19 @@ class AuthController extends Controller
      *     @OA\Parameter(name="password", in="query", required=true, description="Пароль", @OA\Schema(type="string")),
      * )
      */
-    public function login()
-    {
-        $validator = Validator::make(request()->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
-
-        // Проверка правильности полученных данных
-        if ($validator->fails()) {
-            $failedValidation = $this->service->getFailedValidationResponseData($validator->errors()->toArray());
-            return response()->json($failedValidation, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $credentials = request(['email', 'password']);
-        // Попытка авторизации с использованием данных из запроса
-        if(! Auth::attempt($credentials)) {
-            $responseData = $this->service->getUnauthorizedResponseData();
-            return response()->json($responseData, Response::HTTP_UNAUTHORIZED);
-        }
-
-        /** @var User $user */
-        $user = request()->user();
-
-        // Создание токена доступа
-        $token = $this->service->createToken($user);
-        $successResponseData = $this->service->getSuccessAuthResponseData($token);
-
-        // Возвращение ответа с токеном
-        return response()->json($successResponseData);
-    }
-
     /**
-     * Завершение сеанса авторизации пользователя
+     * Авторизация пользователя
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws UnauthorizedException
+     * @throws ValidationException
      */
+    public function login()
+    {
+        $responseData = $this->service->loginUser(request()->all());
+        return response()->json($responseData->toArray());
+    }
+
     /**
      * @OA\Get(
      *     path="/api/auth/logout",
@@ -209,10 +160,14 @@ class AuthController extends Controller
      *     ),
      * ),
      */
+    /**
+     * Завершение сеанса авторизации пользователя
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout()
     {
-        request()->user()->token()->revoke();
-        $successfullyLogoutResponseData = $this->service->getSuccessfullyLogoutResponseData();
-        return response()->json($successfullyLogoutResponseData);
+        $responseData = $this->service->logoutUser();
+        return response()->json($responseData->toArray());
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Dto\factories;
 
+use App\Dto\LoginResponseDto;
 use App\Dto\ResponseDto;
 use App\Dto\ResponseDtoInterface;
+use Carbon\Carbon;
+use Laravel\Passport\PersonalAccessTokenResult;
 
 /**
  * Class SuccessfulResponseDtoFactory
@@ -61,6 +64,26 @@ class SuccessfulResponseDtoFactory
     {
         $dto = new ResponseDto();
         $dto->setMessage(trans('responses.successfully_deleted'));
+
+        return $dto;
+    }
+
+    /**
+     * Ответ "Успешная авторизация"
+     *
+     * @param PersonalAccessTokenResult $token
+     * @return LoginResponseDto
+     */
+    public static function buildSuccessfulLogin(PersonalAccessTokenResult $token)
+    {
+        $data = [
+            'access_token' => $token->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
+        ];
+
+        $dto = new LoginResponseDto();
+        $dto->setData($data);
 
         return $dto;
     }

@@ -66,6 +66,9 @@ class Handler extends ExceptionHandler
                 $dto = ErrorResponseDtoFactory::buildAccessDenied();
                 $status = Response::HTTP_FORBIDDEN;
             }
+        } else if ($exception instanceof UnauthorizedException) {
+            $dto = ErrorResponseDtoFactory::buildUnauthorized();
+            $status = Response::HTTP_UNAUTHORIZED;
         } else if ($exception instanceof AccessDeniedException) {
             $dto = ErrorResponseDtoFactory::buildAccessDenied();
             $status = Response::HTTP_FORBIDDEN;

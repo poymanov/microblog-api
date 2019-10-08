@@ -10,7 +10,7 @@ use App\Post;
  *
  * Репозиторий для управления публикациями
  */
-class PostsRepository
+class PostsRepository extends AbstractRepository
 {
     /**
      * Получение публикации по id

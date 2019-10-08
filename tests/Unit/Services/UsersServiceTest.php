@@ -2,6 +2,10 @@
 
 namespace Tests\Unit\Services;
 
+use App\Dto\factories\SuccessfulResponseDtoFactory;
+use App\Dto\LoginResponseDto;
+use App\Exceptions\UnauthorizedException;
+use App\Exceptions\ValidationException;
 use App\Services\UsersService;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,5 +50,113 @@ class UsersServiceTest extends TestCase
         $actual = $this->service->getById(999);
 
         $this->assertNull($actual);
+    }
+
+    /**
+     * Ошибки валидации при регистрации пользователя
+     *
+     * @test
+     * @throws ValidationException
+     */
+    public function register_user_validation_failed()
+    {
+        $this->expectException(ValidationException::class);
+
+        $user = factory(User::class)->make(['password' => null]);
+
+        $this->service->registerUser($user->toArray());
+    }
+
+    /**
+     * Успешная регистрация пользователя
+     *
+     * @test
+     * @throws ValidationException
+     */
+    public function register_user()
+    {
+        $expected = SuccessfulResponseDtoFactory::buildSuccessfulSignup();
+
+        $user = factory(User::class)->make();
+        $actual = $this->service->registerUser(
+            array_merge(
+                $user->toArray(),
+                ['password' => '123qwe', 'password_confirmation' => '123qwe']
+            )
+        );
+
+        $this->assertEquals($expected, $actual);
+
+        $this->assertDatabaseHas('users', [
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
+    }
+
+    /**
+     * Ошибки валидации при аутентификации пользователя
+     *
+     * @test
+     * @throws UnauthorizedException
+     * @throws ValidationException
+     */
+    public function login_user_validation_failed()
+    {
+        $this->expectException(ValidationException::class);
+
+        $user = factory(User::class)->make(['password' => null]);
+
+        $this->service->loginUser($user->toArray());
+    }
+
+    /**
+     * Попытка аутентификации с использованием несуществующих данных
+     *
+     * @test
+     * @throws UnauthorizedException
+     * @throws ValidationException
+     */
+    public function login_not_existed_user()
+    {
+        $this->expectException(UnauthorizedException::class);
+
+        $authData = ['email' => 'test@test.ru', 'password' => '123qwe'];
+
+        $this->service->loginUser($authData);
+    }
+
+    /**
+     * Успешная аутентификация пользователя
+     *
+     * @test
+     * @throws UnauthorizedException
+     * @throws ValidationException
+     */
+    public function login_successful()
+    {
+        $this->createOauthClient();
+
+        $user = factory(User::class)->create();
+        $authData = ['email' => $user->email, 'password' => 'secret'];
+
+        $actual = $this->service->loginUser($authData);
+
+        $this->assertInstanceOf(LoginResponseDto::class, $actual);
+    }
+
+    /**
+     * Попытка завершения сеанса неавторизованным пользователем
+     *
+     * @test
+     */
+    public function user_logout()
+    {
+        $this->authApi();
+
+        $expected = SuccessfulResponseDtoFactory::buildSuccessfulLogout();
+
+        $actual = $this->service->logoutUser();
+
+        $this->assertEquals($expected, $actual);
     }
 }

@@ -132,6 +132,8 @@ class AuthTest extends TestCase
      */
     public function authorized_user_can_logout()
     {
+        $this->withoutExceptionHandling();
+
         $this->authApi();
 
         $response = $this->json('get', route('api.auth.logout'));
