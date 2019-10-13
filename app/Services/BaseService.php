@@ -2,14 +2,7 @@
 
 namespace App\Services;
 
-use App\Dto\ErrorResponseDto;
-use App\Dto\factories\ErrorResponseDtoFactory;
-use App\Dto\factories\SuccessfulResponseDtoFactory;
-use App\Dto\factories\ValidationDtoFactory;
-use App\Dto\ResponseDto;
-use App\Dto\ResponseDtoInterface;
-use App\Dto\ValidationDto;
-
+use App\Exceptions\NotFoundException;
 
 /**
  * Class BaseService
@@ -20,39 +13,15 @@ use App\Dto\ValidationDto;
 abstract class BaseService
 {
     /**
-     * Набор правил валидаций
-     */
-    const VALIDATION_RULES = [];
-
-
-
-    /**
-     * Ответ "Успешное удаление"
+     * Создание исключения, если объект - null
      *
-     * @return ResponseDto
+     * @param $object
+     * @param string $exceptionClass
      */
-    public function deletedResponseData(): ResponseDtoInterface
+    public function throwExceptionIfNull($object, string $exceptionClass = NotFoundException::class): void
     {
-        return SuccessfulResponseDtoFactory::buildSuccessfulDeleted();
-    }
-
-    /**
-     * Ответ "Успешное создание"
-     *
-     * @return ErrorResponseDto
-     */
-    public function createdResponseDataBase(): ResponseDtoInterface
-    {
-        return SuccessfulResponseDtoFactory::buildSuccessfulCreated();
-    }
-
-    /**
-     * Данные для ответа в json: пользователю запрещен доступ к API
-     *
-     * @return ErrorResponseDto
-     */
-    public function getAccessDeniedResponseData(): ErrorResponseDto
-    {
-        return ErrorResponseDtoFactory::buildAccessDenied();
+        if (is_null($object)) {
+            throw new $exceptionClass;
+        }
     }
 }

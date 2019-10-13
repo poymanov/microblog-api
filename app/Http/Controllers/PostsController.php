@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
-use App\Services\PostsService;
+use App\Services\PostService;
 use Illuminate\Http\Response;
 
 class PostsController extends Controller
@@ -41,7 +41,7 @@ class PostsController extends Controller
      */
     public function __construct()
     {
-        $this->service = new PostsService();
+        $this->service = new PostService();
         $this->middleware('auth:api')->only(['store', 'destroy']);
     }
 

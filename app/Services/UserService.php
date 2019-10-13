@@ -6,26 +6,26 @@ use App\Dto\factories\SuccessfulResponseDtoFactory;
 use App\Dto\LoginResponseDto;
 use App\Dto\ResponseDtoInterface;
 use App\Exceptions\UnauthorizedException;
-use App\Repository\UsersRepository;
+use App\Repository\UserRepository;
 use App\User;
 
 /**
- * Class UsersService
+ * Class UserService
  * @package App\Services
  *
  * Сервис управления пользователями
  */
-class UsersService
+class UserService extends BaseService
 {
-    /** @var UsersRepository Репозиторий для работы с публикациями*/
+    /** @var UserRepository Репозиторий для работы с публикациями*/
     private $repository;
 
     /**
-     * PostsService constructor.
+     * PostService constructor.
      */
     public function __construct()
     {
-        $this->repository = app(UsersRepository::class);
+        $this->repository = app(UserRepository::class);
     }
 
     /**
@@ -48,13 +48,7 @@ class UsersService
      */
     public function registerUser(array $data): ResponseDtoInterface
     {
-        $validationRules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ];
-
-        $this->repository->validateData($data, $validationRules);
+        $this->repository->validateData($data, $this->repository->getCreatingValidationRules());
         $this->repository->create($data);
 
         return SuccessfulResponseDtoFactory::buildSuccessfulSignup();
@@ -65,24 +59,16 @@ class UsersService
      *
      * @param array $data
      * @return LoginResponseDto
-     * @throws UnauthorizedException
      * @throws \App\Exceptions\ValidationException
      */
     public function loginUser(array $data): LoginResponseDto
     {
-        $validationRules = [
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ];
-
-        $this->repository->validateData($data, $validationRules);
+        $this->repository->validateData($data, $this->repository->getLoginValidationRules());
 
         // Попытка авторизации пользователя
         $user = $this->repository->login($data);
 
-        if (is_null($user)) {
-            throw new UnauthorizedException();
-        }
+        $this->throwExceptionIfNull($user, UnauthorizedException::class);
 
         // Создание токен авторизации пользователя
         $token = $this->repository->createToken($user);

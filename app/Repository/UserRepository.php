@@ -10,12 +10,12 @@ use Laravel\Passport\PersonalAccessTokenResult;
 
 
 /**
- * Class UsersRepository
+ * Class UserRepository
  * @package App\Repository
  *
  * Репозиторий для управления пользователя
  */
-class UsersRepository extends AbstractRepository
+class UserRepository extends AbstractRepository
 {
     /**
      * Получение пользователя по id
@@ -75,5 +75,32 @@ class UsersRepository extends AbstractRepository
     public function logout(): void
     {
         Auth::user()->token()->revoke();
+    }
+
+    /**
+     * Правила валидации для создания публикации
+     *
+     * @return array
+     */
+    public function getCreatingValidationRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ];
+    }
+
+    /**
+     * Правила валидации для создания публикации
+     *
+     * @return array
+     */
+    public function getLoginValidationRules(): array
+    {
+        return [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ];
     }
 }

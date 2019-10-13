@@ -6,7 +6,7 @@ use App\Dto\factories\SuccessfulResponseDtoFactory;
 use App\Dto\LoginResponseDto;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
-use App\Services\UsersService;
+use App\Services\UserService;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +15,7 @@ class UsersServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var UsersService Тестируемый сервис */
+    /** @var UserService Тестируемый сервис */
     private $service;
 
     /**
@@ -24,7 +24,7 @@ class UsersServiceTest extends TestCase
     public function __construct()
     {
         parent::__construct();
-        $this->service = app(UsersService::class);
+        $this->service = app(UserService::class);
     }
 
     /**

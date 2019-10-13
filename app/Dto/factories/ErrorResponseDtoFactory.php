@@ -91,7 +91,7 @@ class ErrorResponseDtoFactory
     public static function buildSomethingWentWrong(array $errors): ErrorResponseDto
     {
         $dto = new ErrorResponseDto();
-        $dto->setMessage(trans('something_went_wrong'));
+        $dto->setMessage(trans('responses.something_went_wrong'));
         $dto->setErrors($errors);
 
         return $dto;

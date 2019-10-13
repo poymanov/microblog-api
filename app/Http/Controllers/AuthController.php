@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
-use App\Services\UsersService;
+use App\Services\UserService;
 use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
-    /** @var UsersService */
+    /** @var UserService */
     private $service;
 
     /**
@@ -29,7 +29,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->service = app(UsersService::class);
+        $this->service = app(UserService::class);
         $this->middleware('auth:api')->only('logout');
     }
 

@@ -5,12 +5,12 @@ namespace App\Repository;
 use App\Post;
 
 /**
- * Class PostsRepository
+ * Class PostRepository
  * @package App\Repository
  *
  * Репозиторий для управления публикациями
  */
-class PostsRepository extends AbstractRepository
+class PostRepository extends AbstractRepository
 {
     /**
      * Получение публикации по id
@@ -54,5 +54,18 @@ class PostsRepository extends AbstractRepository
     public function delete(int $id): void
     {
         $this->getById($id)->delete();
+    }
+
+    /**
+     * Правила валидации для создания публикации
+     *
+     * @return array
+     */
+    public function getCreatingValidationRules(): array
+    {
+        return [
+            'text' => 'required|max:300',
+            'user_id' => 'required|exists:users,id',
+        ];
     }
 }

@@ -7,7 +7,7 @@ use App\Exceptions\AccessDeniedException;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\ValidationException;
 use App\Post;
-use App\Services\PostsService;
+use App\Services\PostService;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +17,7 @@ class PostsServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var PostsService Тестируемый сервис */
+    /** @var PostService Тестируемый сервис */
     private $service;
 
     /**
@@ -26,7 +26,7 @@ class PostsServiceTest extends TestCase
     public function __construct()
     {
         parent::__construct();
-        $this->service = app(PostsService::class);
+        $this->service = app(PostService::class);
     }
 
     /**

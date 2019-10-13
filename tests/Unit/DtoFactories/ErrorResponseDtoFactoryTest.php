@@ -94,7 +94,7 @@ class ErrorResponseDtoFactoryTest extends TestCase
     {
         $errors = ['Critical error'];
 
-        $expected = $this->buildErrorResponseData(trans('something_went_wrong'), $errors);
+        $expected = $this->buildErrorResponseData(trans('responses.something_went_wrong'), $errors);
 
         $dto = ErrorResponseDtoFactory::buildSomethingWentWrong($errors);
         $this->assertEquals($dto->toArray(), $expected);

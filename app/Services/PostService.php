@@ -7,43 +7,33 @@ use App\Dto\ResponseDtoInterface;
 use App\Exceptions\AccessDeniedException;
 use App\Exceptions\NotFoundException;
 use App\Post;
-use App\Repository\PostsRepository;
+use App\Repository\PostRepository;
 use Exception;
 
 /**
- * Class PostsService
+ * Class PostService
  * @package App\Services
  *
  * Сервис управления публикациями
  */
-class PostsService extends BaseService
+class PostService extends BaseService
 {
     /** Количество публикаций на одной странице выдачи */
     const POSTS_PER_PAGE = 10;
 
-    /** @var PostsRepository Репозиторий для работы с публикациями*/
+    /** @var PostRepository Репозиторий для работы с публикациями*/
     private $repository;
 
-    /** @var UsersService Сервис для управления пользователями */
+    /** @var UserService Сервис для управления пользователями */
     private $usersService;
 
     /**
-     * PostsService constructor.
+     * PostService constructor.
      */
     public function __construct()
     {
-        $this->repository = app(PostsRepository::class);
-        $this->usersService = app(UsersService::class);
-    }
-
-    /**
-     * Ответ "Успешное создание"
-     *
-     * @return ResponseDtoInterface
-     */
-    public function createdResponseData(): ResponseDtoInterface
-    {
-        return $this->createdResponseDataBase();
+        $this->repository = app(PostRepository::class);
+        $this->usersService = app(UserService::class);
     }
 
     /**
@@ -69,9 +59,7 @@ class PostsService extends BaseService
         // Получение пользователя
         $user = $this->usersService->getById($userId);
 
-        if (is_null($user)) {
-            throw new NotFoundException();
-        }
+        $this->throwExceptionIfNull($user);
 
         return $this->repository->getByUserId($user->id, self::POSTS_PER_PAGE);
     }
@@ -82,7 +70,6 @@ class PostsService extends BaseService
      * @param array $data
      * @param int $userId
      * @return ResponseDtoInterface
-     * @throws NotFoundException
      * @throws \App\Exceptions\ValidationException
      */
     public function createPost(array $data, int $userId): ResponseDtoInterface
@@ -90,31 +77,23 @@ class PostsService extends BaseService
         // Получение пользователя
         $user = $this->usersService->getById($userId);
 
-        if (is_null($user)) {
-            throw new NotFoundException();
-        }
+        $this->throwExceptionIfNull($user);
 
         $data['user_id'] = $user->id;
 
-        $validationRules = [
-            'text' => 'required|max:300',
-            'user_id' => 'required|exists:users,id',
-        ];
-
-        $this->repository->validateData($data, $validationRules);
+        $this->repository->validateData($data, $this->repository->getCreatingValidationRules());
         $this->repository->create($data);
 
         return SuccessfulResponseDtoFactory::buildSuccessfulCreated();
     }
 
     /**
-     * Удаление публикации
+     *  Удаление публикации
      *
      * @param int $postId
      * @param int $userId
      * @return ResponseDtoInterface
      * @throws AccessDeniedException
-     * @throws NotFoundException
      * @throws Exception
      */
     public function deletePost(int $postId, int $userId): ResponseDtoInterface
@@ -122,16 +101,12 @@ class PostsService extends BaseService
         // Получение пользователя
         $user = $this->usersService->getById($userId);
 
-        if (is_null($user)) {
-            throw new NotFoundException();
-        }
+        $this->throwExceptionIfNull($user);
 
         // Получение публикации
         $post = $this->getById($postId);
 
-        if (is_null($post)) {
-            throw new NotFoundException();
-        }
+        $this->throwExceptionIfNull($post);
 
         // Проверка: публикация принадлежит пользователю
         if ($user->id != $post->user_id) {
