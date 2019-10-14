@@ -27,11 +27,13 @@ class PostService extends BaseService
 
     /**
      * PostService constructor.
+     * @param PostRepository $postRepository
+     * @param UserService $userService
      */
-    public function __construct()
+    public function __construct(PostRepository $postRepository, UserService $userService)
     {
-        $this->repository = app(PostRepository::class);
-        $this->usersService = app(UserService::class);
+        $this->repository = $postRepository;
+        $this->usersService = $userService;
     }
 
     /**

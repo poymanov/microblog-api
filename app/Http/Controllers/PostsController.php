@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 
 class PostsController extends Controller
 {
+    /** @var PostService */
     private $service;
 
     /**
@@ -50,9 +51,13 @@ class PostsController extends Controller
      *         ),
      * )
      */
-    public function __construct()
+    /**
+     * PostsController constructor.
+     * @param PostService $postService
+     */
+    public function __construct(PostService $postService)
     {
-        $this->service = new PostService();
+        $this->service = $postService;
         $this->middleware('auth:api')->only(['store', 'destroy']);
     }
 

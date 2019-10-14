@@ -27,9 +27,13 @@ class AuthController extends Controller
      *     bearerFormat="JWT",
      * ),
      */
-    public function __construct()
+    /**
+     * AuthController constructor.
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
     {
-        $this->service = app(UserService::class);
+        $this->service = $userService;
         $this->middleware('auth:api')->only('logout');
     }
 

@@ -17,15 +17,16 @@ use App\Repository\UserRepository;
  */
 class UserService extends BaseService
 {
-    /** @var UserRepository Репозиторий для работы с публикациями*/
+    /** @var UserRepository Репозиторий для работы с публикациями */
     private $repository;
 
     /**
-     * PostService constructor.
+     * UserService constructor.
+     * @param UserRepository $userRepository
      */
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
-        $this->repository = app(UserRepository::class);
+        $this->repository = $userRepository;
     }
 
     /**
