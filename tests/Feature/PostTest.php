@@ -68,9 +68,10 @@ class PostTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $expected = $this->buildResponseData(trans('responses.successfully_created'));
-
-        $response->assertExactJson($expected);
+        $response->assertJsonFragment([
+            'text' => $post->text,
+            'user_id' => $user->id,
+        ]);
     }
 
     /**
@@ -130,20 +131,18 @@ class PostTest extends TestCase
      */
     public function delete_post()
     {
+        $this->withoutExceptionHandling();
         $user = $this->authApi();
 
         $post = factory(Post::class)->create(['user_id' => $user->id]);
         $url = route('api.posts.destroy', $post);
 
         $response = $this->json('delete', $url);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->assertDatabaseMissing('posts', [
             'id' => $post->id,
         ]);
-
-        $expected = $this->buildResponseData(trans('responses.successfully_deleted'));
-
-        $response->assertExactJson($expected);
     }
 
     /**
@@ -178,24 +177,7 @@ class PostTest extends TestCase
         $response = $this->json('get', $url);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertExactJson([
-            'data' => $postsArray,
-            'links' => [
-                'first' => $url.'?page=1',
-                'last' => $url.'?page=1',
-                'prev' => null,
-                'next' => null,
-            ],
-            'meta' => [
-                'current_page' => 1,
-                'from' => 1,
-                'last_page' => 1,
-                'path' => $url,
-                'per_page' => 10,
-                'to' => 5,
-                'total' => 5
-            ]
-        ]);
+        $response->assertExactJson($postsArray);
     }
 
     /**
@@ -206,18 +188,14 @@ class PostTest extends TestCase
     public function get_user_posts_with_pagination()
     {
         $user = factory(User::class)->create();
-        factory(Post::class, 20)->create(['user_id' => $user->id]);
+        $posts = factory(Post::class, 20)->create(['user_id' => $user->id]);
+        $postsArray = $this->postsToArray($posts->take(10));
 
         $url = route('api.posts.user', $user);
 
         $response = $this->json('get', $url);
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['links' => [
-            'first' => $url.'?page=1',
-            'last' => $url.'?page=2',
-            'next' => $url.'?page=2',
-            'prev' => null,
-        ]]);
+        $response->assertExactJson($postsArray);
     }
 
     /**
@@ -233,7 +211,9 @@ class PostTest extends TestCase
             $postsArray[] = [
                 'id' => $post->id,
                 'text' => $post->text,
+                'user_id' => $post->user_id,
                 'created_at' => $post->created_at->timestamp,
+                'updated_at' => $post->updated_at->timestamp,
             ];
         }
         return count($postsArray) == 1 ? $postsArray[0] : $postsArray;

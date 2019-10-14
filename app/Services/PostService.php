@@ -2,11 +2,9 @@
 
 namespace App\Services;
 
-use App\Dto\factories\SuccessfulResponseDtoFactory;
-use App\Dto\ResponseDtoInterface;
+use App\Dto\models\PostDto;
 use App\Exceptions\AccessDeniedException;
 use App\Exceptions\NotFoundException;
-use App\Post;
 use App\Repository\PostRepository;
 use Exception;
 
@@ -40,9 +38,10 @@ class PostService extends BaseService
      * Получение публикации по id
      *
      * @param int $id
-     * @return Post|null
+     * @return PostDto
+     * @throws NotFoundException
      */
-    public function getById(int $id): ?Post
+    public function getById(int $id): PostDto
     {
         return $this->repository->getById($id);
     }
@@ -51,10 +50,9 @@ class PostService extends BaseService
      * Получение публикаций пользователя
      *
      * @param int $userId
-     * @return mixed
-     * @throws NotFoundException
+     * @return PostDto[]
      */
-    public function getUserPosts(int $userId)
+    public function getUserPosts(int $userId): array
     {
         // Получение пользователя
         $user = $this->usersService->getById($userId);
@@ -65,14 +63,36 @@ class PostService extends BaseService
     }
 
     /**
+     * Получение публикаций пользователя в виде распакованного массива
+     *
+     * @param int $userId
+     * @return PostDto[]
+     */
+    public function getUserPostsExtracted(int $userId): array
+    {
+        $data = [];
+
+        // Получение публикаций в виде массива DTO
+        $dtos = $this->getUserPosts($userId);
+
+        foreach ($dtos as $dto) {
+            /** @var $dto PostDto */
+            $data[] = $dto->toArray();
+        }
+
+        return $data;
+    }
+
+    /**
      * Создание публикации
      *
      * @param array $data
      * @param int $userId
-     * @return ResponseDtoInterface
+     * @return PostDto
+     * @throws NotFoundException
      * @throws \App\Exceptions\ValidationException
      */
-    public function createPost(array $data, int $userId): ResponseDtoInterface
+    public function createPost(array $data, int $userId): PostDto
     {
         // Получение пользователя
         $user = $this->usersService->getById($userId);
@@ -82,21 +102,21 @@ class PostService extends BaseService
         $data['user_id'] = $user->id;
 
         $this->repository->validateData($data, $this->repository->getCreatingValidationRules());
-        $this->repository->create($data);
+        $postId = $this->repository->create($data);
 
-        return SuccessfulResponseDtoFactory::buildSuccessfulCreated();
+        return $this->repository->getById($postId);
     }
 
     /**
-     *  Удаление публикации
+     * Удаление публикации
      *
      * @param int $postId
      * @param int $userId
-     * @return ResponseDtoInterface
      * @throws AccessDeniedException
+     * @throws NotFoundException
      * @throws Exception
      */
-    public function deletePost(int $postId, int $userId): ResponseDtoInterface
+    public function deletePost(int $postId, int $userId): void
     {
         // Получение пользователя
         $user = $this->usersService->getById($userId);
@@ -106,15 +126,11 @@ class PostService extends BaseService
         // Получение публикации
         $post = $this->getById($postId);
 
-        $this->throwExceptionIfNull($post);
-
         // Проверка: публикация принадлежит пользователю
-        if ($user->id != $post->user_id) {
+        if ($user->id != $post->getUserId()) {
             throw new AccessDeniedException();
         }
 
-        $this->repository->delete($post->id);
-
-        return SuccessfulResponseDtoFactory::buildSuccessfulDeleted();
+        $this->repository->delete($post->getId());
     }
 }

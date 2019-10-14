@@ -39,32 +39,6 @@ class SuccessfulResponseDtoFactoryTest extends TestCase
     }
 
     /**
-     * Ответ "Успешное создание объекта"
-     *
-     * @test
-     */
-    public function successful_created()
-    {
-        $expected = $this->buildResponseData(trans('responses.successfully_created'));
-
-        $dto = SuccessfulResponseDtoFactory::buildSuccessfulCreated();
-        $this->assertEquals($expected, $dto->toArray());
-    }
-
-    /**
-     * Ответ "Успешное удаление объекта"
-     *
-     * @test
-     */
-    public function successful_deleted()
-    {
-        $expected = $this->buildResponseData(trans('responses.successfully_deleted'));
-
-        $dto = SuccessfulResponseDtoFactory::buildSuccessfulDeleted();
-        $this->assertEquals($expected, $dto->toArray());
-    }
-
-    /**
      * Ответ "Успешная авторизация"
      *
      * @test

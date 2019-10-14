@@ -2,6 +2,9 @@
 
 namespace App\Repository;
 
+use App\Dto\factories\PostDtoFactory;
+use App\Dto\models\PostDto;
+use App\Exceptions\NotFoundException;
 use App\Post;
 
 /**
@@ -16,11 +19,18 @@ class PostRepository extends AbstractRepository
      * Получение публикации по id
      *
      * @param int $id
-     * @return Post|null
+     * @return PostDto
+     * @throws NotFoundException
      */
-    public function getById(int $id): ?Post
+    public function getById(int $id): PostDto
     {
-        return Post::find($id);
+        $post = Post::find($id);
+
+        if (is_null($post)) {
+            throw new NotFoundException();
+        }
+
+        return PostDtoFactory::buildPost($post);
     }
 
     /**
@@ -28,21 +38,30 @@ class PostRepository extends AbstractRepository
      *
      * @param int $userId
      * @param int $perPage
-     * @return mixed
+     * @return PostDto[]
      */
-    public function getByUserId(int $userId, int $perPage)
+    public function getByUserId(int $userId, int $perPage): array
     {
-        return Post::where(['user_id' => $userId])->latest()->paginate($perPage);
+        $dtos = [];
+
+        $posts = Post::where(['user_id' => $userId])->latest()->paginate($perPage);
+
+        foreach ($posts as $post) {
+            $dtos[] = PostDtoFactory::buildPost($post);
+        }
+
+        return $dtos;
     }
 
     /**
      * Создание публикации
      *
-     * @param $data
+     * @param array $data
+     * @return int
      */
-    public function create(array $data): void
+    public function create(array $data): int
     {
-        Post::create($data);
+        return Post::create($data)->id;
     }
 
     /**
@@ -53,7 +72,7 @@ class PostRepository extends AbstractRepository
      */
     public function delete(int $id): void
     {
-        $this->getById($id)->delete();
+        Post::find($id)->delete();
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Services;
 
-use App\Dto\factories\SuccessfulResponseDtoFactory;
+use App\Dto\models\PostDto;
 use App\Exceptions\AccessDeniedException;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\ValidationException;
@@ -33,32 +33,34 @@ class PostsServiceTest extends TestCase
      * Получение публикации по id
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_post_by_id()
     {
         $expected = factory(Post::class)->create();
         $actual = $this->service->getById($expected->id);
 
-        $this->assertEquals($expected->id, $actual->id);
+        $this->assertInstanceOf(PostDto::class, $actual);
+
+        $this->assertEquals($expected->id, $actual->getId());
     }
 
     /**
      * Получение неизвестной публикации
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_not_existed_post()
     {
-        $actual = $this->service->getById(999);
-
-        $this->assertNull($actual);
+        $this->expectException(NotFoundException::class);
+        $this->service->getById(999);
     }
 
     /**
      * Получение публикаций для несуществующего пользователя
      *
      * @test
-     * @throws NotFoundException
      */
     public function get_not_existed_user_posts()
     {
@@ -70,7 +72,6 @@ class PostsServiceTest extends TestCase
      * Получение публикаций пользователя
      *
      * @test
-     * @throws NotFoundException
      */
     public function get_user_posts()
     {
@@ -81,8 +82,30 @@ class PostsServiceTest extends TestCase
 
         $actualPosts = $this->service->getUserPosts($user->id);
 
-        $this->assertEquals($secondPost->id, $actualPosts->first()->id);
-        $this->assertEquals($firstPost->id, $actualPosts->last()->id);
+        $this->assertIsArray($actualPosts);
+
+        $this->assertEquals($secondPost->id, $actualPosts[0]->getId());
+        $this->assertEquals($firstPost->id, $actualPosts[1]->getId());
+    }
+
+    /**
+     * Получение публикаций пользователя в виде распакованного массива
+     *
+     * @test
+     */
+    public function get_user_post_as_extracted_array()
+    {
+        $user = factory(User::class)->create();
+
+        $firstPost = factory(Post::class)->create(['user_id' => $user->id, 'created_at' => Carbon::create(2019, 1, 2)]);
+        $secondPost = factory(Post::class)->create(['user_id' => $user->id, 'created_at' => Carbon::create(2019, 1, 3)]);
+
+        $actualPosts = $this->service->getUserPostsExtracted($user->id);
+
+        $this->assertIsArray($actualPosts);
+
+        $this->assertEquals($secondPost->id, $actualPosts[0]['id']);
+        $this->assertEquals($firstPost->id, $actualPosts[1]['id']);
     }
 
     /**
@@ -111,10 +134,10 @@ class PostsServiceTest extends TestCase
     {
         $post = factory(Post::class)->make();
 
-        $expected = SuccessfulResponseDtoFactory::buildSuccessfulCreated();
         $actual = $this->service->createPost($post->toArray(), $post->user_id);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($post->text, $actual->getText());
+        $this->assertEquals($post->user_id, $actual->getUserId());
     }
 
     /**
@@ -187,13 +210,9 @@ class PostsServiceTest extends TestCase
      */
     public function delete_post()
     {
-        $expected = SuccessfulResponseDtoFactory::buildSuccessfulDeleted();
-
         $post = factory(Post::class)->create();
 
-        $actual = $this->service->deletePost($post->id, $post->user_id);
-
-        $this->assertEquals($expected, $actual);
+        $this->service->deletePost($post->id, $post->user_id);
 
         $this->assertDatabaseMissing('posts', ['id' => $post->id, 'user_id' => $post->user_id]);
     }

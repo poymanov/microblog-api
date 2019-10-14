@@ -43,32 +43,6 @@ class SuccessfulResponseDtoFactory
     }
 
     /**
-     * Ответ "Успешное создание объекта"
-     *
-     * @return ResponseDto
-     */
-    public static function buildSuccessfulCreated(): ResponseDtoInterface
-    {
-        $dto = new ResponseDto();
-        $dto->setMessage(trans('responses.successfully_created'));
-
-        return $dto;
-    }
-
-    /**
-     * Ответ "Успешное удаление объекта"
-     *
-     * @return ResponseDto
-     */
-    public static function buildSuccessfulDeleted(): ResponseDtoInterface
-    {
-        $dto = new ResponseDto();
-        $dto->setMessage(trans('responses.successfully_deleted'));
-
-        return $dto;
-    }
-
-    /**
      * Ответ "Успешная авторизация"
      *
      * @param PersonalAccessTokenResult $token
