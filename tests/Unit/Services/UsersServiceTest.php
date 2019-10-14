@@ -4,6 +4,8 @@ namespace Tests\Unit\Services;
 
 use App\Dto\factories\SuccessfulResponseDtoFactory;
 use App\Dto\LoginResponseDto;
+use App\Dto\models\UserDto;
+use App\Exceptions\NotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Services\UserService;
@@ -31,25 +33,28 @@ class UsersServiceTest extends TestCase
      * Получение пользователя по id
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_user_by_id()
     {
         $expected = factory(User::class)->create();
         $actual = $this->service->getById($expected->id);
 
-        $this->assertEquals($expected->id, $actual->id);
+        $this->assertInstanceOf(UserDto::class, $actual);
+
+        $this->assertEquals($expected->id, $actual->getId());
     }
 
     /**
      * Получение неизвестного пользователя
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_not_existed_user()
     {
-        $actual = $this->service->getById(999);
-
-        $this->assertNull($actual);
+        $this->expectException(NotFoundException::class);
+        $this->service->getById(999);
     }
 
     /**

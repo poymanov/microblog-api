@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: poymanov
- * Date: 13.10.19
- * Time: 11:11
- */
 
 namespace App\Dto\factories;
 

@@ -2,6 +2,9 @@
 
 namespace App\Repository;
 
+use App\Dto\factories\UserDtoFactory;
+use App\Exceptions\NotFoundException;
+use App\Exceptions\UnauthorizedException;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +25,17 @@ class UserRepository extends AbstractRepository
      *
      * @param int $id
      * @return mixed
+     * @throws NotFoundException
      */
     public function getById(int $id)
     {
-        return User::find($id);
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            throw new NotFoundException();
+        }
+
+        return UserDtoFactory::buildUser($user);
     }
 
     /**
@@ -44,12 +54,20 @@ class UserRepository extends AbstractRepository
      * Аутентификция пользователя
      *
      * @param array $credentials
-     * @return User|null
+     * @return User
+     * @throws UnauthorizedException
      */
-    public function login(array $credentials): ?User
+    public function login(array $credentials): User
     {
         Auth::attempt($credentials);
-        return Auth::user();
+
+        $user = Auth::user();
+
+        if (is_null($user)) {
+            throw new UnauthorizedException();
+        }
+
+        return $user;
     }
 
     /**

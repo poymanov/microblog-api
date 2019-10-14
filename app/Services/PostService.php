@@ -51,15 +51,14 @@ class PostService extends BaseService
      *
      * @param int $userId
      * @return PostDto[]
+     * @throws NotFoundException
      */
     public function getUserPosts(int $userId): array
     {
         // Получение пользователя
         $user = $this->usersService->getById($userId);
 
-        $this->throwExceptionIfNull($user);
-
-        return $this->repository->getByUserId($user->id, self::POSTS_PER_PAGE);
+        return $this->repository->getByUserId($user->getId(), self::POSTS_PER_PAGE);
     }
 
     /**
@@ -67,6 +66,7 @@ class PostService extends BaseService
      *
      * @param int $userId
      * @return PostDto[]
+     * @throws NotFoundException
      */
     public function getUserPostsExtracted(int $userId): array
     {
@@ -97,9 +97,7 @@ class PostService extends BaseService
         // Получение пользователя
         $user = $this->usersService->getById($userId);
 
-        $this->throwExceptionIfNull($user);
-
-        $data['user_id'] = $user->id;
+        $data['user_id'] = $user->getId();
 
         $this->repository->validateData($data, $this->repository->getCreatingValidationRules());
         $postId = $this->repository->create($data);
@@ -121,13 +119,11 @@ class PostService extends BaseService
         // Получение пользователя
         $user = $this->usersService->getById($userId);
 
-        $this->throwExceptionIfNull($user);
-
         // Получение публикации
         $post = $this->getById($postId);
 
         // Проверка: публикация принадлежит пользователю
-        if ($user->id != $post->getUserId()) {
+        if ($user->getId() != $post->getUserId()) {
             throw new AccessDeniedException();
         }
 

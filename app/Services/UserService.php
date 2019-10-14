@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Dto\factories\SuccessfulResponseDtoFactory;
 use App\Dto\LoginResponseDto;
+use App\Dto\models\UserDto;
 use App\Dto\ResponseDtoInterface;
 use App\Exceptions\UnauthorizedException;
 use App\Repository\UserRepository;
-use App\User;
 
 /**
  * Class UserService
@@ -32,9 +32,10 @@ class UserService extends BaseService
      * Получение пользователя по id
      *
      * @param int $id
-     * @return User|null
+     * @return UserDto
+     * @throws \App\Exceptions\NotFoundException
      */
-    public function getById(int $id): ?User
+    public function getById(int $id): UserDto
     {
         return $this->repository->getById($id);
     }
@@ -59,6 +60,7 @@ class UserService extends BaseService
      *
      * @param array $data
      * @return LoginResponseDto
+     * @throws UnauthorizedException
      * @throws \App\Exceptions\ValidationException
      */
     public function loginUser(array $data): LoginResponseDto
@@ -67,8 +69,6 @@ class UserService extends BaseService
 
         // Попытка авторизации пользователя
         $user = $this->repository->login($data);
-
-        $this->throwExceptionIfNull($user, UnauthorizedException::class);
 
         // Создание токен авторизации пользователя
         $token = $this->repository->createToken($user);
