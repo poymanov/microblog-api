@@ -88,4 +88,22 @@ class UserService extends BaseService
 
         return SuccessfulResponseDtoFactory::buildSuccessfulLogout();
     }
+
+    /**
+     * Редактирование пользователя
+     *
+     * @param array $data
+     * @param int $id
+     * @return UserDto
+     * @throws \App\Exceptions\NotFoundException
+     * @throws \App\Exceptions\ValidationException
+     */
+    public function updateUser(array $data, int $id): UserDto
+    {
+        $this->repository->validateData($data, $this->repository->getUpdateValidationRules());
+
+        $this->repository->update($data, $id);
+
+        return $this->getById($id);
+    }
 }

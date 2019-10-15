@@ -164,4 +164,86 @@ class UsersServiceTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * Попытка редактирования несуществующего пользователя
+     *
+     * @test
+     */
+    public function update_unknown_user()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->service->updateUser(['name' => 'test'], 999);
+    }
+
+    /**
+     * Ошибки валидации при редактировании пользователя
+     *
+     * @test
+     */
+    public function update_user_validation_failed()
+    {
+        $user = factory(User::class)->create();
+
+        $this->expectException(ValidationException::class);
+
+        $this->service->updateUser([], $user->id);
+    }
+
+    /**
+     * Редактирование имени пользователя
+     *
+     * @test
+     */
+    public function update_user_name_successfully()
+    {
+        $user = factory(User::class)->create();
+
+        $actual = $this->service->updateUser(['name' => 'Test'], $user->id);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'name' => 'Test',
+        ]);
+
+        $this->assertInstanceOf(UserDto::class, $actual);
+        $this->assertEquals($user->id, $actual->getId());
+    }
+
+    /**
+     * Ошибки валидации при изменении пароля пользователя
+     *
+     * @test
+     * @throws NotFoundException
+     * @throws ValidationException
+     */
+    public function update_user_password_validation_failed()
+    {
+        $user = factory(User::class)->create();
+
+        $this->expectException(ValidationException::class);
+
+        $this->service->updateUser(['name' => 'test', 'password' => '123qwe'], $user->id);
+    }
+
+    /**
+     * Ошибки валидации при изменении пароля пользователя
+     *
+     * @test
+     * @throws NotFoundException
+     * @throws ValidationException
+     */
+    public function update_user_password_successfully()
+    {
+        $user = factory(User::class)->create();
+
+        $actual = $this->service->updateUser(
+            ['name' => 'test', 'password' => '123qwe', 'password_confirmation' => '123qwe'],
+            $user->id
+        );
+
+        $this->assertInstanceOf(UserDto::class, $actual);
+        $this->assertEquals($user->id, $actual->getId());
+    }
 }

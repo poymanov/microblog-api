@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,4 +21,9 @@ Route::group(['prefix' => 'posts', 'as' => 'api.posts.'], function () {
     Route::get('{user}', 'PostsController@index')->name('user');
     Route::post('', 'PostsController@store')->name('store');
     Route::delete('{post}', 'PostsController@destroy')->name('destroy');
+});
+
+Route::group(['prefix' => 'profile', 'as' => 'api.profile.'], function () {
+    Route::get('', 'ProfileController@show')->name('show');
+    Route::patch('', 'ProfileController@update')->name('update');
 });

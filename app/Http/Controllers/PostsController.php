@@ -98,6 +98,7 @@ class PostsController extends Controller
      *
      * @param int $userId
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws NotFoundException
      */
     public function index(int $userId)
     {

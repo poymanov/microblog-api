@@ -50,6 +50,28 @@ class UserRepository extends AbstractRepository
     }
 
     /**
+     * Редактирование пользователя
+     *
+     * @param array $data
+     * @param int $id
+     * @throws NotFoundException
+     */
+    public function update(array $data, int $id): void
+    {
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            throw new NotFoundException();
+        }
+
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
+
+        $user->update($data);
+    }
+
+    /**
      * Аутентификция пользователя
      *
      * @param array $credentials
@@ -109,7 +131,7 @@ class UserRepository extends AbstractRepository
     }
 
     /**
-     * Правила валидации для создания публикации
+     * Правила валидации для логина пользователя
      *
      * @return array
      */
@@ -118,6 +140,19 @@ class UserRepository extends AbstractRepository
         return [
             'email' => 'required|string|email',
             'password' => 'required|string',
+        ];
+    }
+
+    /**
+     * Правила валидации для редактирования пользователя
+     *
+     * @return array
+     */
+    public function getUpdateValidationRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
         ];
     }
 }
