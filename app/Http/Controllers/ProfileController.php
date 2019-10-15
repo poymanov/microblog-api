@@ -12,7 +12,7 @@ class ProfileController extends Controller
     /**
      * @OA\Tag(
      *     name="profile",
-     *     description="Работа с профилем пользователя",
+     *     description="Работа с профилем авторизованного пользователя",
      * )
      *
      * @OA\Schema(
@@ -48,7 +48,7 @@ class ProfileController extends Controller
      * @OA\Get(
      *     path="/api/profile",
      *     tags={"profile"},
-     *     summary="Получение профиля пользователя",
+     *     summary="Получение профиля авторизованного пользователя",
      *     @OA\Response(response="200", description="Успешное получение профиля",
      *          @OA\JsonContent(ref="#/components/schemas/UserProfileResponse")
      *     ),
@@ -78,7 +78,7 @@ class ProfileController extends Controller
      * @OA\Post(
      *     path="/api/profile",
      *     tags={"profile"},
-     *     summary="Редактирование профиля пользователя",
+     *     summary="Редактирование профиля авторизованного пользователя",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/UpdateProfileRequestBody")

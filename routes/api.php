@@ -27,3 +27,7 @@ Route::group(['prefix' => 'profile', 'as' => 'api.profile.'], function () {
     Route::get('', 'ProfileController@show')->name('show');
     Route::patch('', 'ProfileController@update')->name('update');
 });
+
+Route::group(['prefix' => 'users', 'as' => 'api.users.'], function () {
+    Route::get('{id}', 'UsersController@show')->name('show');
+});
