@@ -26,6 +26,22 @@ class AuthController extends Controller
      *     scheme="bearer",
      *     bearerFormat="JWT",
      * ),
+     * @OA\Schema(
+     *     schema="SignupRequestBody",
+     *     title="Signup Request Body",
+     *     required={"name", "email", "password", "password_confirmation"},
+     *     @OA\Property(property="name", type="string", example="Test", description="Имя пользователя", maxLength=255),
+     *     @OA\Property(property="email", type="string", example="test@test.ru", description="Email пользователя", maxLength=255),
+     *     @OA\Property(property="password", type="string", example="123qwe", description="Пароль", minLength=6),
+     *     @OA\Property(property="password_confirmation", type="string", example="123qwe", description="Подтверждение пароля", minLength=6),
+     * ),
+     * @OA\Schema(
+     *     schema="LoginRequestBody",
+     *     title="Login Request Body",
+     *     required={"email", "password"},
+     *     @OA\Property(property="email", type="string", example="test@test.ru", description="Email пользователя"),
+     *     @OA\Property(property="password", type="string", example="123qwe", description="Пароль"),
+     * )
      */
     /**
      * AuthController constructor.
@@ -42,6 +58,10 @@ class AuthController extends Controller
      *     path="/api/auth/signup",
      *     tags={"auth"},
      *     summary="Регистрация пользователя",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SignupRequestBody")
+     *     ),
      *     @OA\Response(response="201", description="Успешная регистрация",
      *         @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
@@ -67,10 +87,6 @@ class AuthController extends Controller
      *              ),
      *          ),
      *     ),
-     *     @OA\Parameter(name="name", in="query", required=true, description="Имя пользователя", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="email", in="query", required=true, description="Email пользователя", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="password", in="query", required=true, description="Пароль", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="password_confirmation", in="query", required=true, description="Подтверждение пароля", @OA\Schema(type="string")),
      * )
      */
     /**
@@ -90,6 +106,10 @@ class AuthController extends Controller
      *     path="/api/auth/login",
      *     tags={"auth"},
      *     summary="Аутентификация пользователя",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/LoginRequestBody")
+     *     ),
      *     @OA\Response(response="200", description="Успешная аутентификация",
      *         @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
@@ -122,8 +142,6 @@ class AuthController extends Controller
      *              ),
      *          ),
      *     ),
-     *     @OA\Parameter(name="email", in="query", required=true, description="Email пользователя", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="password", in="query", required=true, description="Пароль", @OA\Schema(type="string")),
      * )
      */
     /**

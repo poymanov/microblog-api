@@ -16,33 +16,22 @@ class ProfileController extends Controller
      * )
      *
      * @OA\Schema(
-     *     schema="UserProfile",
+     *     schema="UserProfileResponse",
      *     title="User Profile Response",
-     *          @OA\Property(
-     *              property="id",
-     *              type="integer",
-     *              example=1,
-     *          ),
-     *         @OA\Property(
-     *              property="name",
-     *              type="string",
-     *              example="User",
-     *         ),
-     *         @OA\Property(
-     *              property="email",
-     *              type="string",
-     *              example="test@test.ru",
-     *         ),
-     *         @OA\Property(
-     *              property="created_at",
-     *              type="integer",
-     *              example=1550087394,
-     *         ),
-     *         @OA\Property(
-     *              property="updated_at",
-     *              type="integer",
-     *              example=1550087394,
-     *         ),
+     *     @OA\Property(property="id", type="integer", example=1),
+     *     @OA\Property(property="name", type="string", example="User"),
+     *     @OA\Property(property="email", type="string", example="test@test.ru"),
+     *     @OA\Property(property="created_at", type="integer", example=1550087394),
+     *     @OA\Property(property="updated_at", type="integer", example=1550087394),
+     * )
+     *
+     * @OA\Schema(
+     *     schema="UpdateProfileRequestBody",
+     *     title="Update Profile Request Body",
+     *     required={"name"},
+     *     @OA\Property(property="name", type="string", example="test@test.ru", description="Имя пользователя", maxLength=255),
+     *     @OA\Property(property="password", type="string", example="123qwe", description="Пароль", minLength=6),
+     *     @OA\Property(property="password_confirmation", type="string", example="123qwe", description="Подтверждение пароля", minLength=6),
      * )
      */
     /**
@@ -61,7 +50,7 @@ class ProfileController extends Controller
      *     tags={"profile"},
      *     summary="Получение профиля пользователя",
      *     @OA\Response(response="200", description="Успешное получение профиля",
-     *          @OA\JsonContent(ref="#/components/schemas/UserProfile")
+     *          @OA\JsonContent(ref="#/components/schemas/UserProfileResponse")
      *     ),
      *     @OA\Response(response="403", description="Попытка получения профиля неавторизованным пользователем",
      *         @OA\JsonContent(
@@ -92,14 +81,10 @@ class ProfileController extends Controller
      *     summary="Редактирование профиля пользователя",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *              @OA\Property(property="name", type="string", example="test@test.ru"),
-     *              @OA\Property(property="password", type="string", example="123qwe"),
-     *              @OA\Property(property="password_confirmation", type="string", example="123qwe"),
-     *         ),
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateProfileRequestBody")
      *     ),
      *     @OA\Response(response="200", description="Профиль отредактирован",
-     *          @OA\JsonContent(ref="#/components/schemas/UserProfile")
+     *          @OA\JsonContent(ref="#/components/schemas/UserProfileResponse")
      *     ),
      *     @OA\Response(response="403", description="Попытка получения профиля неавторизованным пользователем",
      *         @OA\JsonContent(

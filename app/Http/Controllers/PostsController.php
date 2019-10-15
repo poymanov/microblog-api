@@ -24,31 +24,17 @@ class PostsController extends Controller
      * @OA\Schema(
      *     schema="UsersPosts",
      *     title="Users Posts Response",
-     *          @OA\Property(
-     *              property="id",
-     *              type="integer",
-     *              example=1,
-     *          ),
-     *         @OA\Property(
-     *              property="text",
-     *              type="string",
-     *              example="text text text",
-     *         ),
-     *         @OA\Property(
-     *              property="user_id",
-     *              type="integer",
-     *              example=1,
-     *         ),
-     *         @OA\Property(
-     *              property="created_at",
-     *              type="integer",
-     *              example=1550087394,
-     *         ),
-     *         @OA\Property(
-     *              property="updated_at",
-     *              type="integer",
-     *              example=1550087394,
-     *         ),
+     *     @OA\Property(property="id", type="integer", example=1),
+     *     @OA\Property(property="text", type="string", example="text text text"),
+     *     @OA\Property(property="user_id", type="integer", example=1),
+     *     @OA\Property(property="created_at", type="integer", example=1550087394),
+     *     @OA\Property(property="updated_at", type="integer", example=1550087394),
+     * )
+     * @OA\Schema(
+     *     schema="CreatePostRequestBody",
+     *     title="New Post Request Body",
+     *     required={"text"},
+     *     @OA\Property(property="text", type="string", example="Post text", maxLength=300),
      * )
      */
     /**
@@ -113,6 +99,10 @@ class PostsController extends Controller
      *     security={
      *         {"bearerAuth": {}}
      *     },
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CreatePostRequestBody")
+     *     ),
      *     @OA\Response(response="201", description="Успешное создание публикации",
      *         @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
@@ -140,7 +130,6 @@ class PostsController extends Controller
      *              ),
      *          ),
      *     ),
-     *     @OA\Parameter(name="text", in="query", required=true, description="Текст публикации", @OA\Schema(type="string", maxLength=300)),
      * )
      */
     /**
