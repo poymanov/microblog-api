@@ -30,4 +30,6 @@ Route::group(['prefix' => 'profile', 'as' => 'api.profile.'], function () {
 
 Route::group(['prefix' => 'users', 'as' => 'api.users.'], function () {
     Route::get('{id}', 'UsersController@show')->name('show');
+    Route::post('{id}/subscribe', 'SubscriptionsController@subscribe')->name('subscribe');
+    Route::delete('{id}/unsubscribe', 'SubscriptionsController@unsubscribe')->name('unsubscribe');
 });

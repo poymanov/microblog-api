@@ -6,9 +6,6 @@ use App\Exceptions\ValidationException;
 use Validator;
 
 /**
- * Class AbstractRepository
- * @package App\Repository
- *
  * Общие методы для работы со всеми репозиториями
  */
 class AbstractRepository

@@ -96,4 +96,30 @@ class ErrorResponseDtoFactory
 
         return $dto;
     }
+
+    /**
+     * Ответ с ошибкой "Попытка подписаться на самого себя"
+     *
+     * @return ErrorResponseDto
+     */
+    public static function buildSubscribeHimself(): ErrorResponseDto
+    {
+        $dto = new ErrorResponseDto();
+        $dto->setMessage(trans('responses.user_subscribe_himself'));
+
+        return $dto;
+    }
+
+    /**
+     * Ответ с ошибкой "Попытка отписаться от пользователя, на которого не подписан"
+     *
+     * @return ErrorResponseDto
+     */
+    public static function buildUnsubscribeFromNotSubscribed(): ErrorResponseDto
+    {
+        $dto = new ErrorResponseDto();
+        $dto->setMessage(trans('responses.user_unsubscribe_from_not_subscribed'));
+
+        return $dto;
+    }
 }

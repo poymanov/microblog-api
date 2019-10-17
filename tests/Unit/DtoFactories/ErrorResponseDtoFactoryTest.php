@@ -99,4 +99,30 @@ class ErrorResponseDtoFactoryTest extends TestCase
         $dto = ErrorResponseDtoFactory::buildSomethingWentWrong($errors);
         $this->assertEquals($dto->toArray(), $expected);
     }
+
+    /**
+     * Создание ответа "Пользователь пытается подписаться на самого себя"
+     *
+     * @test
+     */
+    public function response_user_subscribe_himself()
+    {
+        $expected = $this->buildErrorResponseData(trans('responses.user_subscribe_himself'), []);
+
+        $dto = ErrorResponseDtoFactory::buildSubscribeHimself();
+        $this->assertEquals($dto->toArray(), $expected);
+    }
+
+    /**
+     * Создание ответа "Попытка отписаться от пользователя, на которого не подписан"
+     *
+     * @test
+     */
+    public function response_user_unsubscribe_from_not_subscribed_user()
+    {
+        $expected = $this->buildErrorResponseData(trans('responses.user_unsubscribe_from_not_subscribed'), []);
+
+        $dto = ErrorResponseDtoFactory::buildUnsubscribeFromNotSubscribed();
+        $this->assertEquals($dto->toArray(), $expected);
+    }
 }

@@ -169,6 +169,8 @@ class UsersServiceTest extends TestCase
      * Попытка редактирования несуществующего пользователя
      *
      * @test
+     * @throws NotFoundException
+     * @throws ValidationException
      */
     public function update_unknown_user()
     {
@@ -181,6 +183,8 @@ class UsersServiceTest extends TestCase
      * Ошибки валидации при редактировании пользователя
      *
      * @test
+     * @throws NotFoundException
+     * @throws ValidationException
      */
     public function update_user_validation_failed()
     {
@@ -195,6 +199,8 @@ class UsersServiceTest extends TestCase
      * Редактирование имени пользователя
      *
      * @test
+     * @throws NotFoundException
+     * @throws ValidationException
      */
     public function update_user_name_successfully()
     {

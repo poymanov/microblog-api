@@ -78,6 +78,12 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof ValidationException) {
             $dto = ErrorResponseDtoFactory::buildValidationFailed($exception->getErrors());
             $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+        } else if ($exception instanceof UserSubscribeHimselfException) {
+            $dto = ErrorResponseDtoFactory::buildSubscribeHimself();
+            $status = Response::HTTP_BAD_REQUEST;
+        } else if ($exception instanceof UserUnsubscribeFromNotSubscribedUser) {
+            $dto = ErrorResponseDtoFactory::buildUnsubscribeFromNotSubscribed();
+            $status = Response::HTTP_BAD_REQUEST;
         } else {
             $dto = ErrorResponseDtoFactory::buildSomethingWentWrong([$exception->getMessage()]);
             $status = Response::HTTP_INTERNAL_SERVER_ERROR;

@@ -12,4 +12,6 @@ return [
     'successfully_signup.message' => 'User created',
     'not_found' => 'Resource not found',
     'something_went_wrong' => 'Something went wrong',
+    'user_subscribe_himself' => 'User trying subscribe to himself',
+    'user_unsubscribe_from_not_subscribed' => 'User trying unsubscribe from not subscribed user',
 ];
