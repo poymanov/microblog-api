@@ -21,7 +21,7 @@ class ErrorResponseDto extends ResponseDto
     public function toArray(): array
     {
         $data = parent::toArray();
-        $data['data']['errors'] = $this->errors;
+        $data['errors'] = $this->errors;
 
         return $data;
     }

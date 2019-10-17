@@ -46,8 +46,7 @@ class AuthTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $expected = $this->buildResponseData(trans('responses.successfully_signup.message'));
-        $response->assertExactJson($expected);
+        $response->assertExactJson([]);
 
         $this->assertDatabaseHas('users', ['name' => $user->name, 'email' => $user->email]);
     }

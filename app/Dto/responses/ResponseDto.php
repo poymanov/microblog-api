@@ -21,9 +21,7 @@ class ResponseDto implements ResponseDtoInterface
     public function toArray(): array
     {
         return [
-            'data' => [
-                'message' => $this->message,
-            ]
+            'message' => $this->message,
         ];
     }
 

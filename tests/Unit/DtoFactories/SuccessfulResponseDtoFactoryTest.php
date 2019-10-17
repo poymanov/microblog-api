@@ -13,19 +13,6 @@ class SuccessfulResponseDtoFactoryTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Ответ "Успешная регистрация"
-     *
-     * @test
-     */
-    public function successful_registration()
-    {
-        $expected = $this->buildResponseData(trans('responses.successfully_signup.message'));
-
-        $dto = SuccessfulResponseDtoFactory::buildSuccessfulSignup();
-        $this->assertEquals($expected, $dto->toArray());
-    }
-
-    /**
      * Ответ "Успешное завершение сеанса пользователя"
      *
      * @test
@@ -55,13 +42,11 @@ class SuccessfulResponseDtoFactoryTest extends TestCase
         $token->save();
 
         $expected = [
-            'data' => [
-                'access_token' => $tokenResult->accessToken,
-                'token_type' => 'Bearer',
-                'expires_at' => Carbon::parse(
-                    $tokenResult->token->expires_at
-                )->toDateTimeString(),
-            ]
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+            )->toDateTimeString(),
         ];
 
         $dto = SuccessfulResponseDtoFactory::buildSuccessfulLogin($tokenResult);

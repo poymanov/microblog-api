@@ -34,9 +34,7 @@ class UsersController extends Controller
      *     ),
      *     @OA\Response(response="404", description="Попытка получения профиля несуществующего пользователя",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Resource not found"),
-     *              ),
+     *              @OA\Property(property="message", type="string", example="Resource not found"),
      *         ),
      *     ),
      *     @OA\Parameter(name="id", in="path", required=true, description="Идентификатор пользователя", @OA\Schema(type="integer")),

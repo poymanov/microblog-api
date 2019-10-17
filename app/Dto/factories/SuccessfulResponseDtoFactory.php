@@ -17,19 +17,6 @@ use Laravel\Passport\PersonalAccessTokenResult;
 class SuccessfulResponseDtoFactory
 {
     /**
-     * Ответ "Успешная регистрация"
-     *
-     * @return ResponseDto
-     */
-    public static function buildSuccessfulSignup(): ResponseDtoInterface
-    {
-        $dto = new ResponseDto();
-        $dto->setMessage(trans('responses.successfully_signup.message'));
-
-        return $dto;
-    }
-
-    /**
      * Ответ "Успешное завершение сеанса пользователя"
      *
      * @return ResponseDto

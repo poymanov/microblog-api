@@ -9,7 +9,6 @@ return [
     'unauthorized_logout.message' => 'Unauthorized',
     'unauthorized_logout.errors' => 'Failed to logout',
     'successfully_logout.message' => 'Successfully logged out',
-    'successfully_signup.message' => 'User created',
     'not_found' => 'Resource not found',
     'something_went_wrong' => 'Something went wrong',
     'user_subscribe_himself' => 'User trying subscribe to himself',

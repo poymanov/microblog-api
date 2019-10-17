@@ -45,15 +45,12 @@ class UserService extends BaseService
      * Регистрация пользователя
      *
      * @param array $data
-     * @return mixed
      * @throws \App\Exceptions\ValidationException
      */
-    public function registerUser(array $data): ResponseDtoInterface
+    public function registerUser(array $data): void
     {
         $this->repository->validateData($data, $this->repository->getCreatingValidationRules());
         $this->repository->create($data);
-
-        return SuccessfulResponseDtoFactory::buildSuccessfulSignup();
     }
 
     /**

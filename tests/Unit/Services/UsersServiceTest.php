@@ -80,17 +80,13 @@ class UsersServiceTest extends TestCase
      */
     public function register_user()
     {
-        $expected = SuccessfulResponseDtoFactory::buildSuccessfulSignup();
-
         $user = factory(User::class)->make();
-        $actual = $this->service->registerUser(
+        $this->service->registerUser(
             array_merge(
                 $user->toArray(),
                 ['password' => '123qwe', 'password_confirmation' => '123qwe']
             )
         );
-
-        $this->assertEquals($expected, $actual);
 
         $this->assertDatabaseHas('users', [
             'name' => $user->name,

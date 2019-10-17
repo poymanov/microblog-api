@@ -34,19 +34,15 @@ class SubscriptionsController extends Controller
      *     @OA\Response(response="204", description="Успешная подписка на пользователя"),
      *     @OA\Response(response="403", description="Попытка подписки неавторизованным пользователем",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Access denied"),
-     *                  @OA\Property(property="errors", type="array",
-     *                      @OA\Items(type="string", example="You have not access permission to API.")
-     *                  ),
+     *              @OA\Property(property="message", type="string", example="Access denied"),
+     *              @OA\Property(property="errors", type="array",
+     *                  @OA\Items(type="string", example="You have not access permission to API.")
      *              ),
      *         ),
      *     ),
      *     @OA\Response(response="404", description="Попытка подписки на несуществующего пользователя",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Resource not found"),
-     *              ),
+     *              @OA\Property(property="message", type="string", example="Resource not found"),
      *         ),
      *     ),
      * )
@@ -75,19 +71,15 @@ class SubscriptionsController extends Controller
      *     @OA\Response(response="204", description="Успешная отписка от пользователя"),
      *     @OA\Response(response="403", description="Попытка отподписки неавторизованным пользователем",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Access denied"),
-     *                  @OA\Property(property="errors", type="array",
-     *                      @OA\Items(type="string", example="You have not access permission to API.")
-     *                  ),
+     *              @OA\Property(property="message", type="string", example="Access denied"),
+     *              @OA\Property(property="errors", type="array",
+     *                  @OA\Items(type="string", example="You have not access permission to API.")
      *              ),
      *         ),
      *     ),
      *     @OA\Response(response="404", description="Попытка отподписки от несуществующего пользователя",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Resource not found")
-     *              ),
+     *              @OA\Property(property="message", type="string", example="Resource not found")
      *         ),
      *     ),
      * )

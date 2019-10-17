@@ -54,11 +54,9 @@ class ProfileController extends Controller
      *     ),
      *     @OA\Response(response="403", description="Попытка получения профиля неавторизованным пользователем",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Access denied"),
-     *                  @OA\Property(property="errors", type="array",
-     *                      @OA\Items(type="string", example="You have not access permission to API.")
-     *                  ),
+     *              @OA\Property(property="message", type="string", example="Access denied"),
+     *              @OA\Property(property="errors", type="array",
+     *                  @OA\Items(type="string", example="You have not access permission to API.")
      *              ),
      *         ),
      *     ),
@@ -88,22 +86,18 @@ class ProfileController extends Controller
      *     ),
      *     @OA\Response(response="403", description="Попытка получения профиля неавторизованным пользователем",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Access denied"),
-     *                  @OA\Property(property="errors", type="array",
-     *                      @OA\Items(type="string", example="You have not access permission to API.")
-     *                  ),
+     *              @OA\Property(property="message", type="string", example="Access denied"),
+     *              @OA\Property(property="errors", type="array",
+     *                  @OA\Items(type="string", example="You have not access permission to API.")
      *              ),
      *         ),
      *     ),
      *     @OA\Response(response="422", description="Ошибки валидации параметров",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Validation failed"),
-     *                  @OA\Property(property="errors", type="object",
-     *                      @OA\Property(property="text", type="array",
-     *                          @OA\Items(type="string", example="The name field is required.")
-     *                      ),
+     *              @OA\Property(property="message", type="string", example="Validation failed"),
+     *              @OA\Property(property="errors", type="object",
+     *                  @OA\Property(property="text", type="array",
+     *                      @OA\Items(type="string", example="The name field is required.")
      *                  ),
      *              ),
      *          ),

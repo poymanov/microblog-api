@@ -62,27 +62,19 @@ class AuthController extends Controller
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/SignupRequestBody")
      *     ),
-     *     @OA\Response(response="201", description="Успешная регистрация",
-     *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="User created"),
-     *              ),
-     *          ),
-     *     ),
+     *     @OA\Response(response="201", description="Успешная регистрация"),
      *     @OA\Response(response="422", description="Ошибки валидации параметров",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Validation failed"),
-     *                  @OA\Property(property="errors", type="object",
-     *                      @OA\Property(property="name", type="array",
-     *                          @OA\Items(type="string", example="The name field is required.")
-     *                      ),
-     *                      @OA\Property(property="email", type="array",
-     *                          @OA\Items(type="string", example="The email field is required.")
-     *                      ),
-     *                      @OA\Property(property="password", type="array",
-     *                          @OA\Items(type="string", example="The password field is required.")
-     *                      ),
+     *              @OA\Property(property="message", type="string", example="Validation failed"),
+     *              @OA\Property(property="errors", type="object",
+     *                  @OA\Property(property="name", type="array",
+     *                      @OA\Items(type="string", example="The name field is required.")
+     *                  ),
+     *                  @OA\Property(property="email", type="array",
+     *                      @OA\Items(type="string", example="The email field is required.")
+     *                  ),
+     *                  @OA\Property(property="password", type="array",
+     *                      @OA\Items(type="string", example="The password field is required.")
      *                  ),
      *              ),
      *          ),
@@ -97,8 +89,8 @@ class AuthController extends Controller
      */
     public function signup()
     {
-        $responseData = $this->service->registerUser(request()->all());
-        return response()->json($responseData->toArray(), Response::HTTP_CREATED);
+        $this->service->registerUser(request()->all());
+        return response()->json(null, Response::HTTP_CREATED);
     }
 
     /**
@@ -112,34 +104,28 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(response="200", description="Успешная аутентификация",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="access_token", type="string", example="eyJ0eXAiO..."),
-     *                  @OA\Property(property="token_type", type="string", example="Bearer"),
-     *                  @OA\Property(property="expires_at", type="string", example="2019-02-06 22:00:53"),
-     *              ),
-     *          ),
+     *              @OA\Property(property="access_token", type="string", example="eyJ0eXAiO..."),
+     *              @OA\Property(property="token_type", type="string", example="Bearer"),
+     *              @OA\Property(property="expires_at", type="string", example="2019-02-06 22:00:53"),
+     *         ),
      *     ),
      *     @OA\Response(response="422", description="Ошибки валидации параметров",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Validation failed"),
-     *                  @OA\Property(property="errors", type="object",
-     *                      @OA\Property(property="email", type="array",
-     *                          @OA\Items(type="string", example="The email field is required.")
-     *                      ),
-     *                      @OA\Property(property="password", type="array",
-     *                          @OA\Items(type="string", example="The password field is required.")
-     *                      ),
+     *              @OA\Property(property="message", type="string", example="Validation failed"),
+     *              @OA\Property(property="errors", type="object",
+     *                  @OA\Property(property="email", type="array",
+     *                      @OA\Items(type="string", example="The email field is required.")
+     *                  ),
+     *                  @OA\Property(property="password", type="array",
+     *                      @OA\Items(type="string", example="The password field is required.")
      *                  ),
      *              ),
      *          ),
      *     ),
      *     @OA\Response(response="401", description="Попытка аутентификации с отсутствующими в БД данными",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Unauthorized"),
-     *                  @OA\Property(property="errors", type="string", example="Failed to authorize user (unknown user or invalid email/password)"),
-     *              ),
+     *              @OA\Property(property="message", type="string", example="Unauthorized"),
+     *              @OA\Property(property="errors", type="string", example="Failed to authorize user (unknown user or invalid email/password)"),
      *          ),
      *     ),
      * )
@@ -167,17 +153,13 @@ class AuthController extends Controller
      *     },
      *     @OA\Response(response="200", description="Успешное завершение сеанса",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Successfully logged out"),
-     *              ),
-     *          ),
+     *              @OA\Property(property="message", type="string", example="Successfully logged out"),
+     *         ),
      *     ),
      *     @OA\Response(response="401", description="Попытка завершения сеанса неавторизованным пользователем",
      *         @OA\JsonContent(
-     *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="message", type="string", example="Unauthorized"),
-     *                  @OA\Property(property="errors", type="string", example="Failed to logout"),
-     *              ),
+     *              @OA\Property(property="message", type="string", example="Unauthorized"),
+     *              @OA\Property(property="errors", type="string", example="Failed to logout"),
      *          ),
      *     ),
      * ),

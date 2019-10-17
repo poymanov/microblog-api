@@ -17,9 +17,7 @@ class LoginResponseDto implements ResponseDtoInterface
      */
     public function toArray(): array
     {
-        return [
-            'data' => $this->data
-        ];
+        return $this->data;
     }
 
     /**

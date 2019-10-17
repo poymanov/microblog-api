@@ -54,9 +54,7 @@ abstract class TestCase extends BaseTestCase
     protected function buildResponseData($message): array
     {
         return [
-            'data' => [
-                'message' => $message,
-            ]
+            'message' => $message,
         ];
     }
 
@@ -71,10 +69,8 @@ abstract class TestCase extends BaseTestCase
     protected function buildErrorResponseData(string $message, array $errors = []): array
     {
         return [
-            'data' => [
-                'message' => $message,
-                'errors' => $errors,
-            ],
+            'message' => $message,
+            'errors' => $errors,
         ];
     }
 }
