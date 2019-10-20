@@ -30,6 +30,8 @@ class UserTest extends TestCase
             'email' => $user->email,
             'created_at' => $user->created_at->timestamp,
             'updated_at' => $user->updated_at->timestamp,
+            'subscriptions_count' => $user->subscriptions_count,
+            'subscribers_count' => $user->subscribers_count,
         ];
 
         $response->assertExactJson($expected);

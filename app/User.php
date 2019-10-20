@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 /**
@@ -40,4 +40,58 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Подписки
+     *
+     * @return HasManyThrough
+     */
+    public function subscriptions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            User::class,
+            UserSubscribe::class,
+            'subscriber_id',
+            'id',
+            'id',
+            'publisher_id'
+        );
+    }
+
+    /**
+     * Подписчики
+     *
+     * @return HasManyThrough
+     */
+    public function subscribers(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            User::class,
+            UserSubscribe::class,
+            'publisher_id',
+            'id',
+            'id',
+            'subscriber_id'
+        );
+    }
+
+    /**
+     * Количество подписок
+     *
+     * @return int
+     */
+    public function getSubscriptionsCountAttribute(): int
+    {
+        return $this->subscriptions()->count();
+    }
+
+    /**
+     * Количество подписчиков
+     *
+     * @return int
+     */
+    public function getSubscribersCountAttribute(): int
+    {
+        return $this->subscribers()->count();
+    }
 }

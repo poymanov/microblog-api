@@ -26,7 +26,9 @@ class UserDtoFactory
             $user->name,
             $user->email,
             $user->created_at,
-            $user->updated_at
+            $user->updated_at,
+            $user->subscriptions_count,
+            $user->subscribers_count
         );
     }
 }

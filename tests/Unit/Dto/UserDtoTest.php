@@ -20,13 +20,23 @@ class UserDtoTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $dto = new UserDto($user->id, $user->name, $user->email, $user->created_at, $user->updated_at);
+        $dto = new UserDto(
+            $user->id,
+            $user->name,
+            $user->email,
+            $user->created_at,
+            $user->updated_at,
+            $user->subscriptions_count,
+            $user->subscribers_count
+        );
 
         $this->assertEquals($user->id, $dto->getId());
         $this->assertEquals($user->name, $dto->getName());
         $this->assertEquals($user->email, $dto->getEmail());
         $this->assertEquals($user->created_at, $dto->getCreatedAt());
         $this->assertEquals($user->updated_at, $dto->getUpdatedAt());
+        $this->assertEquals($user->subscriptions_count, $dto->getSubscriptionsCount());
+        $this->assertEquals($user->subscribers_count, $dto->getSubscribersCount());
     }
 
     /**
@@ -43,10 +53,20 @@ class UserDtoTest extends TestCase
             'name' => $user->name,
             'email' => $user->email,
             'created_at' => $user->created_at->timestamp,
-            'updated_at' => $user->created_at->timestamp,
+            'updated_at' => $user->updated_at->timestamp,
+            'subscriptions_count' => $user->subscriptions_count,
+            'subscribers_count' => $user->subscribers_count,
         ];
 
-        $dto = new UserDto($user->id, $user->name, $user->email, $user->created_at, $user->updated_at);
+        $dto = new UserDto(
+            $user->id,
+            $user->name,
+            $user->email,
+            $user->created_at,
+            $user->updated_at,
+            $user->subscriptions_count,
+            $user->subscribers_count
+        );
 
         $this->assertIsArray($dto->toArray());
         $this->assertEquals($expected, $dto->toArray());

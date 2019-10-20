@@ -28,6 +28,12 @@ class UserDto implements Arrayable
     /** @var Carbon Дата последнего изменения пользователя */
     private $updatedAt;
 
+    /** @var int Количество подписок */
+    private $subscriptionsCount;
+
+    /** @var int Количество подписчиков*/
+    private $subscribersCount;
+
     /**
      * UserDto constructor.
      * @param int $id
@@ -35,14 +41,25 @@ class UserDto implements Arrayable
      * @param string $email
      * @param Carbon $createdAt
      * @param Carbon $updatedAt
+     * @param int $subscriptionsCount
+     * @param int $subscribersCount
      */
-    public function __construct(int $id, string $name, string $email, Carbon $createdAt, Carbon $updatedAt)
-    {
+    public function __construct(
+        int $id,
+        string $name,
+        string $email,
+        Carbon $createdAt,
+        Carbon $updatedAt,
+        int $subscriptionsCount,
+        int $subscribersCount
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->subscriptionsCount = $subscriptionsCount;
+        $this->subscribersCount = $subscribersCount;
     }
 
     /**
@@ -86,6 +103,22 @@ class UserDto implements Arrayable
     }
 
     /**
+     * @return int
+     */
+    public function getSubscriptionsCount(): int
+    {
+        return $this->subscriptionsCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubscribersCount(): int
+    {
+        return $this->subscribersCount;
+    }
+
+    /**
      * Get the instance as an array.
      *
      * @return array
@@ -98,6 +131,8 @@ class UserDto implements Arrayable
             'email' => $this->getEmail(),
             'created_at' => $this->getCreatedAt()->timestamp,
             'updated_at' => $this->getUpdatedAt()->timestamp,
+            'subscriptions_count' => $this->getSubscriptionsCount(),
+            'subscribers_count' => $this->getSubscriptionsCount(),
         ];
     }
 }

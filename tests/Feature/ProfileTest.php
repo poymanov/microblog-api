@@ -53,6 +53,8 @@ class ProfileTest extends TestCase
             'email' => $user->email,
             'created_at' => $user->created_at->timestamp,
             'updated_at' => $user->updated_at->timestamp,
+            'subscriptions_count' => $user->subscriptions_count,
+            'subscribers_count' => $user->subscribers_count,
         ];
 
         $url = route('api.profile.show');
@@ -106,6 +108,8 @@ class ProfileTest extends TestCase
             'email' => $user->email,
             'created_at' => $user->created_at->timestamp,
             'updated_at' => $user->updated_at->timestamp,
+            'subscriptions_count' => $user->subscriptions_count,
+            'subscribers_count' => $user->subscribers_count,
         ];
 
         $response->assertExactJson($expected);
@@ -134,6 +138,8 @@ class ProfileTest extends TestCase
             'email' => $user->email,
             'created_at' => $user->created_at->timestamp,
             'updated_at' => $user->updated_at->timestamp,
+            'subscriptions_count' => $user->subscriptions_count,
+            'subscribers_count' => $user->subscribers_count,
         ];
 
         $response->assertExactJson($expected);
