@@ -42,6 +42,70 @@ class UserService extends BaseService
     }
 
     /**
+     * Получение подписок пользователя
+     *
+     * @param int $id
+     * @return UserDto[]
+     * @throws \App\Exceptions\NotFoundException
+     */
+    public function getSubscriptions(int $id): array
+    {
+        return $this->repository->getSubscriptions($id);
+    }
+
+    /**
+     * Получение подписок пользователя в виде "распакованного" массива
+     *
+     * @param int $id
+     * @return array
+     * @throws \App\Exceptions\NotFoundException
+     */
+    public function getSubscriptionsExtracted(int $id): array
+    {
+        $data = [];
+
+        $dtos = $this->repository->getSubscriptions($id);
+
+        foreach ($dtos as $dto) {
+            $data[] = $dto->toArray();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Получение подписчиков
+     *
+     * @param int $id
+     * @return UserDto[]
+     * @throws \App\Exceptions\NotFoundException
+     */
+    public function getSubscribers(int $id): array
+    {
+        return $this->repository->getSubscribers($id);
+    }
+
+    /**
+     * Получение подписчиков пользователя в виде "распакованного" массива
+     *
+     * @param int $id
+     * @return array
+     * @throws \App\Exceptions\NotFoundException
+     */
+    public function getSubscribersExtracted(int $id): array
+    {
+        $data = [];
+
+        $dtos = $this->repository->getSubscribers($id);
+
+        foreach ($dtos as $dto) {
+            $data[] = $dto->toArray();
+        }
+
+        return $data;
+    }
+
+    /**
      * Регистрация пользователя
      *
      * @param array $data

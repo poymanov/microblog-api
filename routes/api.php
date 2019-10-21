@@ -28,4 +28,6 @@ Route::group(['prefix' => 'users', 'as' => 'api.users.'], function () {
     Route::patch('', 'UsersController@update')->name('update');
     Route::post('{id}/subscribe', 'SubscriptionsController@subscribe')->name('subscribe');
     Route::delete('{id}/unsubscribe', 'SubscriptionsController@unsubscribe')->name('unsubscribe');
+    Route::get('{id}/subscriptions', 'UsersController@subscriptions')->name('subscriptions');
+    Route::get('{id}/subscribers', 'UsersController@subscribers')->name('subscribers');
 });

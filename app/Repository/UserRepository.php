@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Dto\factories\UserDtoFactory;
+use App\Dto\models\UserDto;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\User;
@@ -35,6 +36,54 @@ class UserRepository extends AbstractRepository
         }
 
         return UserDtoFactory::buildUser($user);
+    }
+
+    /**
+     * Получение подписок пользователя
+     *
+     * @param int $id
+     * @return UserDto[]
+     * @throws NotFoundException
+     */
+    public function getSubscriptions(int $id): array
+    {
+        $dto = [];
+
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            throw new NotFoundException();
+        }
+
+        foreach ($user->subscriptions as $user) {
+            $dto[] = UserDtoFactory::buildUser($user);
+        }
+
+        return $dto;
+    }
+
+    /**
+     * Получение подписчиков пользователя
+     *
+     * @param int $id
+     * @return UserDto[]
+     * @throws NotFoundException
+     */
+    public function getSubscribers(int $id): array
+    {
+        $dto = [];
+
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            throw new NotFoundException();
+        }
+
+        foreach ($user->subscribers as $user) {
+            $dto[] = UserDtoFactory::buildUser($user);
+        }
+
+        return $dto;
     }
 
     /**

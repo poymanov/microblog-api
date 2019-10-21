@@ -79,6 +79,9 @@ class UsersController extends Controller
      *     path="/api/users",
      *     tags={"users"},
      *     summary="Редактирование профиля авторизованного пользователя",
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/UpdateProfileRequestBody")
@@ -119,4 +122,61 @@ class UsersController extends Controller
         return response()->json($user->toArray());
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/users/{id}/subscriptions",
+     *     tags={"users"},
+     *     summary="Получение подписок пользователя",
+     *     @OA\Response(response="200", description="Успешное получение подписок",
+     *          @OA\JsonContent(@OA\Items(ref="#/components/schemas/UserProfileResponse"))
+     *     ),
+     *     @OA\Response(response="404", description="Попытка получения подписок несуществующего пользователя",
+     *         @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Resource not found"),
+     *         ),
+     *     ),
+     *     @OA\Parameter(name="id", in="path", required=true, description="Идентификатор пользователя", @OA\Schema(type="integer")),
+     * )
+     */
+    /**
+     * Получение списка подписок
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\NotFoundException
+     */
+    public function subscriptions(int $id)
+    {
+        $subscriptions = $this->service->getSubscriptionsExtracted($id);
+        return response()->json($subscriptions);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/users/{id}/subscribers",
+     *     tags={"users"},
+     *     summary="Получение подписчиков пользователя",
+     *     @OA\Response(response="200", description="Успешное получение подписчиков",
+     *          @OA\JsonContent(@OA\Items(ref="#/components/schemas/UserProfileResponse"))
+     *     ),
+     *     @OA\Response(response="404", description="Попытка получения подписчиков несуществующего пользователя",
+     *         @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Resource not found"),
+     *         ),
+     *     ),
+     *     @OA\Parameter(name="id", in="path", required=true, description="Идентификатор пользователя", @OA\Schema(type="integer")),
+     * )
+     */
+    /**
+     * Получение списка подписчиков
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\NotFoundException
+     */
+    public function subscribers(int $id)
+    {
+        $subscriptions = $this->service->getSubscribersExtracted($id);
+        return response()->json($subscriptions);
+    }
 }

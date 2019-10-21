@@ -10,6 +10,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Services\UserService;
 use App\User;
+use App\UserSubscribe;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -247,5 +248,134 @@ class UsersServiceTest extends TestCase
 
         $this->assertInstanceOf(UserDto::class, $actual);
         $this->assertEquals($user->id, $actual->getId());
+    }
+
+
+    /**
+     * Получение подписок для несуществующего пользователя
+     *
+     * @test
+     */
+    public function get_not_existed_user_subscriptions()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->service->getSubscriptions(999);
+    }
+
+    /**
+     * Получение пустого списка подписок
+     *
+     * @test
+     */
+    public function get_empty_subscriptions()
+    {
+        $subscriber = factory(User::class)->create();
+
+        $actual = $this->service->getSubscriptions($subscriber->id);
+
+        $this->assertEquals([], $actual);
+    }
+
+    /**
+     * Получение подписок
+     *
+     * @test
+     */
+    public function get_subscriptions()
+    {
+        $subscriber = factory(User::class)->create();
+
+        $publisher1 = factory(User::class)->create();
+        $publisher2 = factory(User::class)->create();
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber->id,
+            'publisher_id' => $publisher1->id,
+        ]);
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber->id,
+            'publisher_id' => $publisher2->id,
+        ]);
+
+        $expected[] = new UserDto(
+            $publisher1->id, $publisher1->name,
+            $publisher1->email, $publisher1->created_at,
+            $publisher1->updated_at, $publisher1->subscriptions_count, $publisher1->subscribers_count
+        );
+
+        $expected[] = new UserDto(
+            $publisher2->id, $publisher2->name,
+            $publisher2->email, $publisher2->created_at,
+            $publisher2->updated_at, $publisher2->subscriptions_count, $publisher2->subscribers_count
+        );
+
+        $actual = $this->service->getSubscriptions($subscriber->id);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Получение подписчиков для несуществующего пользователя
+     *
+     * @test
+     */
+    public function get_not_existed_user_subscribers()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->service->getSubscribers(999);
+    }
+
+    /**
+     * Получение пустого списка подписчиков
+     *
+     * @test
+     */
+    public function get_empty_subscribers()
+    {
+        $publisher = factory(User::class)->create();
+
+        $actual = $this->service->getSubscribers($publisher->id);
+
+        $this->assertEquals([], $actual);
+    }
+
+    /**
+     * Получение списка подписчиков
+     *
+     * @test
+     */
+    public function get_subscribers()
+    {
+        $publisher = factory(User::class)->create();
+
+        $subscriber1 = factory(User::class)->create();
+        $subscriber2 = factory(User::class)->create();
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber1->id,
+            'publisher_id' => $publisher->id,
+        ]);
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber2->id,
+            'publisher_id' => $publisher->id,
+        ]);
+
+        $expected[] = new UserDto(
+            $subscriber1->id, $subscriber1->name,
+            $subscriber1->email, $subscriber1->created_at,
+            $subscriber1->updated_at, $subscriber1->subscriptions_count, $subscriber1->subscribers_count
+        );
+
+        $expected[] = new UserDto(
+            $subscriber2->id, $subscriber2->name,
+            $subscriber2->email, $subscriber2->created_at,
+            $subscriber2->updated_at, $subscriber2->subscriptions_count, $subscriber2->subscribers_count
+        );
+
+        $actual = $this->service->getSubscribers($publisher->id);
+
+        $this->assertEquals($expected, $actual);
     }
 }

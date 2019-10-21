@@ -31,6 +31,9 @@ class SubscriptionsController extends Controller
      *     path="/api/user/{id}/subscribe",
      *     tags={"subscriptions"},
      *     summary="Подписка на пользователя",
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
      *     @OA\Response(response="204", description="Успешная подписка на пользователя"),
      *     @OA\Response(response="403", description="Попытка подписки неавторизованным пользователем",
      *         @OA\JsonContent(
@@ -64,10 +67,13 @@ class SubscriptionsController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\Delete(
      *     path="/api/user/{id}/unsubscribe",
      *     tags={"subscriptions"},
      *     summary="Отписка от пользователя",
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
      *     @OA\Response(response="204", description="Успешная отписка от пользователя"),
      *     @OA\Response(response="403", description="Попытка отподписки неавторизованным пользователем",
      *         @OA\JsonContent(
