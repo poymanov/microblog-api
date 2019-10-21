@@ -23,13 +23,9 @@ Route::group(['prefix' => 'posts', 'as' => 'api.posts.'], function () {
     Route::delete('{post}', 'PostsController@destroy')->name('destroy');
 });
 
-Route::group(['prefix' => 'profile', 'as' => 'api.profile.'], function () {
-    Route::get('', 'ProfileController@show')->name('show');
-    Route::patch('', 'ProfileController@update')->name('update');
-});
-
 Route::group(['prefix' => 'users', 'as' => 'api.users.'], function () {
     Route::get('{id}', 'UsersController@show')->name('show');
+    Route::patch('', 'UsersController@update')->name('update');
     Route::post('{id}/subscribe', 'SubscriptionsController@subscribe')->name('subscribe');
     Route::delete('{id}/unsubscribe', 'SubscriptionsController@unsubscribe')->name('unsubscribe');
 });
