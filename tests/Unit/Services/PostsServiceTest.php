@@ -9,6 +9,7 @@ use App\Exceptions\ValidationException;
 use App\Post;
 use App\Services\PostService;
 use App\User;
+use App\UserSubscribe;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -61,6 +62,7 @@ class PostsServiceTest extends TestCase
      * Получение публикаций для несуществующего пользователя
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_not_existed_user_posts()
     {
@@ -72,6 +74,7 @@ class PostsServiceTest extends TestCase
      * Получение публикаций пользователя
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_user_posts()
     {
@@ -92,6 +95,7 @@ class PostsServiceTest extends TestCase
      * Получение публикаций пользователя в виде распакованного массива
      *
      * @test
+     * @throws NotFoundException
      */
     public function get_user_post_as_extracted_array()
     {
@@ -215,5 +219,56 @@ class PostsServiceTest extends TestCase
         $this->service->deletePost($post->id, $post->user_id);
 
         $this->assertDatabaseMissing('posts', ['id' => $post->id, 'user_id' => $post->user_id]);
+    }
+
+    /**
+     * Получение пустой ленты пользователя
+     *
+     * @test
+     * @throws NotFoundException
+     */
+    public function get_empty_feed()
+    {
+        $user = factory(User::class)->create();
+
+        $actual = $this->service->userFeed($user->id);
+
+        $this->assertEquals([], $actual);
+    }
+
+    /**
+     * Получение ленты пользователя
+     *
+     * @test
+     * @throws NotFoundException
+     */
+    public function get_user_feed()
+    {
+        $subscriber = factory(User::class)->create();
+
+        $publisher1 = factory(User::class)->create();
+        $publisher2 = factory(User::class)->create();
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber->id, 'publisher_id' => $publisher1->id
+        ]);
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber->id, 'publisher_id' => $publisher2->id
+        ]);
+
+        $post1 = factory(Post::class)->create(['user_id' => $subscriber->id]);
+        $post2 = factory(Post::class)->create(['user_id' => $publisher1->id]);
+        $post3 = factory(Post::class)->create(['user_id' => $publisher2->id]);
+
+        $post1Dto = new PostDto($post1->id, $post1->text, $post1->user_id, $post1->created_at, $post1->updated_at);
+        $post2Dto = new PostDto($post2->id, $post2->text, $post2->user_id, $post2->created_at, $post2->updated_at);
+        $post3Dto = new PostDto($post3->id, $post3->text, $post3->user_id, $post3->created_at, $post3->updated_at);
+
+        $actual = $this->service->userFeed($subscriber->id);
+
+        $expected = [$post1Dto, $post2Dto, $post3Dto];
+
+        $this->assertEquals($expected, $actual);
     }
 }

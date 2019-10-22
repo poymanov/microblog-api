@@ -21,6 +21,7 @@ Route::group(['prefix' => 'posts', 'as' => 'api.posts.'], function () {
     Route::get('{user}', 'PostsController@index')->name('user');
     Route::post('', 'PostsController@store')->name('store');
     Route::delete('{post}', 'PostsController@destroy')->name('destroy');
+    Route::get('', 'PostsController@feed')->name('feed');
 });
 
 Route::group(['prefix' => 'users', 'as' => 'api.users.'], function () {

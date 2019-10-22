@@ -88,6 +88,31 @@ class PostsController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/posts",
+     *     tags={"post"},
+     *     summary="Получение ленты подписок пользователя",
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
+     *     @OA\Response(response="200", description="Успешное получение ленты подписок пользователя",
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/UsersPosts")),
+     *     ),
+     *     @OA\Parameter(name="id", in="path", required=true, description="Идентификатор пользователя", @OA\Schema(type="integer")),
+     * )
+     */
+    /**
+     * Лента подписок пользователя
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws NotFoundException
+     */
+    public function feed()
+    {
+        return response()->json($this->service->userFeedExtracted(request()->user()->id));
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/posts",
      *     tags={"post"},

@@ -131,4 +131,44 @@ class PostService extends BaseService
 
         $this->repository->delete($post->getId());
     }
+
+    /**
+     * Получение ленты подписок пользователя
+     *
+     * @param int $userId
+     * @return PostDto[]
+     * @throws NotFoundException
+     */
+    public function userFeed(int $userId): array
+    {
+        $subscriptionsIds = [$userId];
+
+        $subscriptions = $this->usersService->getSubscriptions($userId);
+
+        foreach ($subscriptions as $subscription) {
+            $subscriptionsIds[] = $subscription->getId();
+        }
+
+        return $this->repository->feed($subscriptionsIds, self::POSTS_PER_PAGE);
+    }
+
+    /**
+     * Получение ленты подписок пользователя в распакованном виде
+     *
+     * @param int $userId
+     * @return array
+     * @throws NotFoundException
+     */
+    public function userFeedExtracted(int $userId): array
+    {
+        $data = [];
+
+        $posts = $this->userFeed($userId);
+
+        foreach ($posts as $post) {
+            $data[] = $post->toArray();
+        }
+
+        return $data;
+    }
 }

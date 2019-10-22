@@ -76,6 +76,26 @@ class PostRepository extends AbstractRepository
     }
 
     /**
+     * Получение ленты пользователя
+     *
+     * @param array $userIds
+     * @param int $perPage
+     * @return PostDto[]
+     */
+    public function feed(array $userIds, int $perPage): array
+    {
+        $dtos = [];
+
+        $posts = Post::whereIn('user_id', $userIds)->latest()->paginate($perPage);
+
+        foreach ($posts as $post) {
+            $dtos[] = PostDtoFactory::buildPost($post);
+        }
+
+        return $dtos;
+    }
+
+    /**
      * Правила валидации для создания публикации
      *
      * @return array

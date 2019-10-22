@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Dto\models\PostDto;
 use App\Post;
 use App\User;
+use App\UserSubscribe;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
@@ -196,6 +198,58 @@ class PostTest extends TestCase
         $response = $this->json('get', $url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertExactJson($postsArray);
+    }
+
+    /**
+     * Получение пустого списка ленты
+     *
+     * @test
+     */
+    public function get_empty_feed()
+    {
+        $this->authApi();
+
+        $url = route('api.posts.feed');
+
+        $response = $this->json('get', $url);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertExactJson([]);
+    }
+
+    /**
+     * Получение ленты подписчиков пользователя
+     *
+     * @test
+     */
+    public function get_user_feed()
+    {
+        $subscriber = $this->authApi();
+        $publisher1 = factory(User::class)->create();
+        $publisher2 = factory(User::class)->create();
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber->id, 'publisher_id' => $publisher1->id
+        ]);
+
+        factory(UserSubscribe::class)->create([
+            'subscriber_id' => $subscriber->id, 'publisher_id' => $publisher2->id
+        ]);
+
+        $post1 = factory(Post::class)->create(['user_id' => $subscriber->id]);
+        $post2 = factory(Post::class)->create(['user_id' => $publisher1->id]);
+        $post3 = factory(Post::class)->create(['user_id' => $publisher2->id]);
+
+        $post1Dto = new PostDto($post1->id, $post1->text, $post1->user_id, $post1->created_at, $post1->updated_at);
+        $post2Dto = new PostDto($post2->id, $post2->text, $post2->user_id, $post2->created_at, $post2->updated_at);
+        $post3Dto = new PostDto($post3->id, $post3->text, $post3->user_id, $post3->created_at, $post3->updated_at);
+
+        $expected = [$post1Dto->toArray(), $post2Dto->toArray(), $post3Dto->toArray()];
+
+        $url = route('api.posts.feed');
+        $response = $this->json('get', $url);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertExactJson($expected);
     }
 
     /**
